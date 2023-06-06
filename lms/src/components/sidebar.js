@@ -66,6 +66,16 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
+// const Toolbar = styled("div")(({ theme }) => ({
+//   display: "flex",
+//   alignItems: "center",
+//   justifyContent: "flex-start",
+//   padding: theme.spacing(0, 1),
+//   // necessary for content to be below app bar
+//   ...theme.mixins.toolbar,
+//   boxShadow: "none",
+// }));
+
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: prop => prop !== "open",
 })(({ theme, open }) => ({
@@ -143,7 +153,12 @@ export default function SideBar() {
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar
-          sx={{ backgroundColor: "#ffffff", paddingLeft: 20, paddingRight: 20 }}
+          sx={{
+            backgroundColor: "#ffffff",
+            paddingLeft: 20,
+            paddingRight: 20,
+            boxShadow: "none", // Add this line to remove the shadow
+          }}
         >
           <IconButton
             color="inherit"
