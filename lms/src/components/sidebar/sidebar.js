@@ -70,16 +70,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-// const Toolbar = styled("div")(({ theme }) => ({
-//   display: "flex",
-//   alignItems: "center",
-//   justifyContent: "flex-start",
-//   padding: theme.spacing(0, 1),
-//   // necessary for content to be below app bar
-//   ...theme.mixins.toolbar,
-//   boxShadow: "none",
-// }));
-
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: prop => prop !== "open",
 })(({ theme, open }) => ({
@@ -90,7 +80,7 @@ const AppBar = styled(MuiAppBar, {
   }),
   ...(open && {
     marginLeft: drawerWidth,
-    width: "calc(100% - ${drawerWidth}px)",
+    width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -102,15 +92,9 @@ const Drawer = styled(MuiDrawer, {
   shouldForwardProp: prop => prop !== "open",
 })(({ theme, open }) => ({
   width: drawerWidth,
-  paddingLeft: "20px",
-  paddingRight: "20px",
   flexShrink: 0,
   whiteSpace: "nowrap",
   boxSizing: "border-box",
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
   ...(open && {
     ...openedMixin(theme),
     "& .MuiDrawer-paper": openedMixin(theme),
@@ -156,14 +140,7 @@ export default function SideBar() {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar
-          sx={{
-            backgroundColor: "#ffffff",
-            paddingLeft: 20,
-            paddingRight: 20,
-            boxShadow: "none", // Add this line to remove the shadow
-          }}
-        >
+        {/* <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -176,10 +153,10 @@ export default function SideBar() {
           >
             <MenuIcon />
           </IconButton>
-          {/* <Typography variant="h6" noWrap component="div"> */}
-          {/* <SearchRoundedIcon color="primary" /> */}
-          {/* </Typography> */}
-        </Toolbar>
+          <Typography variant="h6" noWrap component="div">
+            Mini variant drawer
+          </Typography>
+        </Toolbar> */}
       </AppBar>
       <Drawer
         variant="permanent"
@@ -187,14 +164,14 @@ export default function SideBar() {
         sx={{ paddingLeft: 20, paddingRight: 20 }}
       >
         <DrawerHeader>
-          <div className="NavLabel">logo</div>
-          <IconButton onClick={handleDrawerClose}>
+          <div className="NavLogo">Logo</div>
+          {/* <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
               <ChevronLeftIcon />
             )}
-          </IconButton>
+          </IconButton> */}
         </DrawerHeader>
         <Divider />
 
@@ -210,7 +187,7 @@ export default function SideBar() {
               marginRight: "20px",
               borderRadius: "10px",
               "&:hover": {
-                backgroundColor: "#7FFFD4",
+                backgroundColor: "#FEC4B7 ",
               },
             }}
           >
@@ -219,6 +196,7 @@ export default function SideBar() {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
+                color: "#F14722",
               }}
             >
               <SpaceDashboardRoundedIcon />
@@ -240,7 +218,7 @@ export default function SideBar() {
               marginRight: "20px",
               borderRadius: "10px",
               "&:hover": {
-                backgroundColor: "#7FFFD4",
+                backgroundColor: "#FEC4B7 ",
               },
             }}
           >
@@ -249,6 +227,7 @@ export default function SideBar() {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
+                color: "#F14722",
               }}
             >
               <StyleRoundedIcon />
@@ -265,7 +244,7 @@ export default function SideBar() {
               marginRight: "20px",
               borderRadius: "10px",
               "&:hover": {
-                backgroundColor: "#7FFFD4",
+                backgroundColor: "#FEC4B7 ",
               },
             }}
           >
@@ -274,6 +253,7 @@ export default function SideBar() {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
+                color: "#F14722",
               }}
             >
               <TableRestaurantRoundedIcon />
@@ -298,7 +278,7 @@ export default function SideBar() {
               marginRight: "20px",
               borderRadius: "10px",
               "&:hover": {
-                backgroundColor: "#7FFFD4",
+                backgroundColor: "#FEC4B7 ",
               },
             }}
           >
@@ -307,6 +287,7 @@ export default function SideBar() {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
+                color: "#F14722",
               }}
             >
               <ManageAccountsRoundedIcon />
@@ -326,7 +307,7 @@ export default function SideBar() {
               marginRight: "20px",
               borderRadius: "10px",
               "&:hover": {
-                backgroundColor: "#7FFFD4",
+                backgroundColor: "#FEC4B7 ",
               },
             }}
           >
@@ -335,6 +316,7 @@ export default function SideBar() {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
+                color: "#F14722",
               }}
             >
               <AutoStoriesRoundedIcon />
@@ -355,7 +337,7 @@ export default function SideBar() {
               marginRight: "20px",
               borderRadius: "10px",
               "&:hover": {
-                backgroundColor: "#7FFFD4",
+                backgroundColor: "#FEC4B7 ",
               },
             }}
           >
@@ -364,6 +346,7 @@ export default function SideBar() {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
+                color: "#F14722",
               }}
             >
               <DragIndicatorRoundedIcon />
@@ -396,6 +379,7 @@ export default function SideBar() {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
+                color: "#F14722",
               }}
             >
               <DashboardCustomizeRoundedIcon />

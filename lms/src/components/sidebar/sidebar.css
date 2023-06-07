@@ -5,3 +5,11 @@
   margin-left: 20px;
   font-size: 11pt;
 }
+.NavLogo {
+  font-family: "Varela Round", sans-serif;
+  margin-left: 20px;
+  font-size: 25pt;
+  text-align: center;
+  justify-content: center;
+  color: #f14722;
+}
