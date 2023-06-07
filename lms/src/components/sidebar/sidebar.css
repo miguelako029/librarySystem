@@ -2,8 +2,9 @@
 
 .NavLabel {
   font-family: "Varela Round", sans-serif;
-  margin-left: 20px;
-  font-size: 11pt;
+  margin-left: 10px;
+  font-size: 6pt;
+  /* opacity: "open ? 1 : 0"; */
 }
 .NavLogo {
   font-family: "Varela Round", sans-serif;
@@ -12,4 +13,10 @@
   text-align: center;
   justify-content: center;
   color: #f14722;
+}
+
+@media (max-width: 880px) {
+  .NavLabel {
+    opacity: 0;
+  }
 }

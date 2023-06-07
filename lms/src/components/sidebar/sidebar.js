@@ -37,6 +37,7 @@ import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import AutoStoriesRoundedIcon from "@mui/icons-material/AutoStoriesRounded";
 import DragIndicatorRoundedIcon from "@mui/icons-material/DragIndicatorRounded";
 import "../sidebar/sidebar.css";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 270;
 
@@ -64,29 +65,29 @@ const closedMixin = theme => ({
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  justifyContent: "center",
+  justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: prop => prop !== "open",
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(["width", "margin"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
+// const AppBar = styled(MuiAppBar, {
+//   shouldForwardProp: prop => prop !== "open",
+// })(({ theme, open }) => ({
+//   zIndex: theme.zIndex.drawer + 1,
+//   transition: theme.transitions.create(["width", "margin"], {
+//     easing: theme.transitions.easing.sharp,
+//     duration: theme.transitions.duration.leavingScreen,
+//   }),
+//   ...(open && {
+//     marginLeft: drawerWidth,
+//     width: `calc(100% - ${drawerWidth}px)`,
+//     transition: theme.transitions.create(["width", "margin"], {
+//       easing: theme.transitions.easing.sharp,
+//       duration: theme.transitions.duration.enteringScreen,
+//     }),
+//   }),
+// }));
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: prop => prop !== "open",
@@ -105,42 +106,24 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function SideBar() {
+export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+  const navigate = useNavigate();
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  // const handleDrawerOpen = () => {
+  //   setOpen(true);
+  // };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-  const [openAdmin, setOpenAdmin] = React.useState(false);
-  const [openCategories, setOpenCategories] = React.useState(false);
-  const [openBooks, setOpenBooks] = React.useState(false);
-  const [openTables, setOpenTables] = React.useState(false);
-
-  const handleAdminClick = () => {
-    setOpenAdmin(!openAdmin);
-  };
-
-  const handleCategoriesClick = () => {
-    setOpenCategories(!openCategories);
-  };
-  const handleBooksClick = () => {
-    setOpenBooks(!openBooks);
-  };
-
-  const handleTableClick = () => {
-    setOpenTables(!openTables);
-  };
+  // const handleDrawerClose = () => {
+  //   setOpen(false);
+  // };
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        {/* <Toolbar>
+      {/* <AppBar position="fixed" open={open}>
+        <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -156,25 +139,20 @@ export default function SideBar() {
           <Typography variant="h6" noWrap component="div">
             Mini variant drawer
           </Typography>
-        </Toolbar> */}
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        open={open}
-        sx={{ paddingLeft: 20, paddingRight: 20 }}
-      >
+        </Toolbar>
+      </AppBar> */}
+      <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <div className="NavLogo">Logo</div>
-          {/* <IconButton onClick={handleDrawerClose}>
+          {/* <IconButton onClick={handleDrawerClose}> */}
+          <IconButton onClick={() => setOpen(!open)}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
               <ChevronLeftIcon />
             )}
-          </IconButton> */}
+          </IconButton>
         </DrawerHeader>
         <Divider />
-
         <p className="NavLabel">Main</p>
         <ListItem disablePadding sx={{ display: "block" }}>
           <ListItemButton
@@ -186,9 +164,14 @@ export default function SideBar() {
               marginLeft: "20px",
               marginRight: "20px",
               borderRadius: "10px",
+
               "&:hover": {
                 backgroundColor: "#FEC4B7 ",
               },
+            }}
+            onClick={event => {
+              setOpen(true);
+              navigate("/");
             }}
           >
             <ListItemIcon
@@ -201,7 +184,13 @@ export default function SideBar() {
             >
               <SpaceDashboardRoundedIcon />
             </ListItemIcon>
-            <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
+            <ListItemText
+              primary="Dashboard"
+              sx={{
+                opacity: open ? 1 : 0,
+                fontFamily: "Varela Round, sans-serif",
+              }}
+            />
           </ListItemButton>
         </ListItem>
 
@@ -220,6 +209,10 @@ export default function SideBar() {
               "&:hover": {
                 backgroundColor: "#FEC4B7 ",
               },
+            }}
+            onClick={() => {
+              setOpen(true);
+              navigate("/bookloan");
             }}
           >
             <ListItemIcon
@@ -246,6 +239,9 @@ export default function SideBar() {
               "&:hover": {
                 backgroundColor: "#FEC4B7 ",
               },
+            }}
+            onClick={() => {
+              navigate("/tablereserve");
             }}
           >
             <ListItemIcon
@@ -281,6 +277,9 @@ export default function SideBar() {
                 backgroundColor: "#FEC4B7 ",
               },
             }}
+            onClick={() => {
+              navigate("/people");
+            }}
           >
             <ListItemIcon
               sx={{
@@ -309,6 +308,9 @@ export default function SideBar() {
               "&:hover": {
                 backgroundColor: "#FEC4B7 ",
               },
+            }}
+            onClick={() => {
+              navigate("/booksettings");
             }}
           >
             <ListItemIcon
@@ -340,6 +342,9 @@ export default function SideBar() {
                 backgroundColor: "#FEC4B7 ",
               },
             }}
+            onClick={() => {
+              navigate("/tablesettings");
+            }}
           >
             <ListItemIcon
               sx={{
@@ -358,9 +363,6 @@ export default function SideBar() {
           </ListItemButton>
         </ListItem>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-      </Box>
     </Box>
   );
 }
