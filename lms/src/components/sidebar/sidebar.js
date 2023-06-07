@@ -8,6 +8,7 @@ import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
+// import Label from "@mui/materia/Label";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -33,6 +34,9 @@ import TableRestaurantRoundedIcon from "@mui/icons-material/TableRestaurantRound
 import EventRoundedIcon from "@mui/icons-material/EventRounded";
 import FormatListBulletedRoundedIcon from "@mui/icons-material/FormatListBulletedRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
+import AutoStoriesRoundedIcon from "@mui/icons-material/AutoStoriesRounded";
+import DragIndicatorRoundedIcon from "@mui/icons-material/DragIndicatorRounded";
+import "../sidebar/sidebar.css";
 
 const drawerWidth = 270;
 
@@ -86,7 +90,7 @@ const AppBar = styled(MuiAppBar, {
   }),
   ...(open && {
     marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
+    width: "calc(100% - ${drawerWidth}px)",
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -173,7 +177,7 @@ export default function SideBar() {
             <MenuIcon />
           </IconButton>
           {/* <Typography variant="h6" noWrap component="div"> */}
-          <SearchRoundedIcon color="primary" />
+          {/* <SearchRoundedIcon color="primary" /> */}
           {/* </Typography> */}
         </Toolbar>
       </AppBar>
@@ -183,16 +187,18 @@ export default function SideBar() {
         sx={{ paddingLeft: 20, paddingRight: 20 }}
       >
         <DrawerHeader>
-          <div>logo</div>
-          {/* <IconButton onClick={handleDrawerClose}>
+          <div className="NavLabel">logo</div>
+          <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
               <ChevronLeftIcon />
             )}
-          </IconButton> */}
+          </IconButton>
         </DrawerHeader>
+        <Divider />
 
+        <p className="NavLabel">Main</p>
         <ListItem disablePadding sx={{ display: "block" }}>
           <ListItemButton
             // onClick={handleAdminClick}
@@ -200,6 +206,12 @@ export default function SideBar() {
               minHeight: 48,
               justifyContent: open ? "initial" : "center",
               px: 2.5,
+              marginLeft: "20px",
+              marginRight: "20px",
+              borderRadius: "10px",
+              "&:hover": {
+                backgroundColor: "#7FFFD4",
+              },
             }}
           >
             <ListItemIcon
@@ -212,33 +224,24 @@ export default function SideBar() {
               <SpaceDashboardRoundedIcon />
             </ListItemIcon>
             <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
-            {/* {openAdmin ? <ExpandLess /> : <ExpandMore />} */}
           </ListItemButton>
-          {/* <Collapse in={openAdmin} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Users" />
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Settings" />
-              </ListItemButton>
-            </List>
-          </Collapse> */}
         </ListItem>
+
+        <p className="NavLabel">Services</p>
 
         <ListItem disablePadding sx={{ display: "block" }}>
           <ListItemButton
-            onClick={handleAdminClick}
+            // onClick={handleAdminClick}
             sx={{
               minHeight: 48,
               justifyContent: open ? "initial" : "center",
               px: 2.5,
+              marginLeft: "20px",
+              marginRight: "20px",
+              borderRadius: "10px",
+              "&:hover": {
+                backgroundColor: "#7FFFD4",
+              },
             }}
           >
             <ListItemIcon
@@ -248,30 +251,139 @@ export default function SideBar() {
                 justifyContent: "center",
               }}
             >
-              <PersonRoundedIcon />
+              <StyleRoundedIcon />
             </ListItemIcon>
-            <ListItemText primary="Admin" sx={{ opacity: open ? 1 : 0 }} />
-            {openAdmin ? <ExpandLess /> : <ExpandMore />}
+            <ListItemText primary="Book Loan" sx={{ opacity: open ? 1 : 0 }} />
           </ListItemButton>
-          <Collapse in={openAdmin} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <ManageAccountsRoundedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Users" />
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <SettingsRoundedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Settings" />
-              </ListItemButton>
-            </List>
-          </Collapse>
+          <ListItemButton
+            // onClick={handleAdminClick}
+            sx={{
+              minHeight: 48,
+              justifyContent: open ? "initial" : "center",
+              px: 2.5,
+              marginLeft: "20px",
+              marginRight: "20px",
+              borderRadius: "10px",
+              "&:hover": {
+                backgroundColor: "#7FFFD4",
+              },
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              <TableRestaurantRoundedIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Table Reservation"
+              sx={{ opacity: open ? 1 : 0 }}
+            />
+          </ListItemButton>
         </ListItem>
+
+        <p className="NavLabel">Maintenance</p>
+
         <ListItem disablePadding sx={{ display: "block" }}>
           <ListItemButton
+            // onClick={handleAdminClick}
+            sx={{
+              minHeight: 48,
+              justifyContent: open ? "initial" : "center",
+              px: 2.5,
+              marginLeft: "20px",
+              marginRight: "20px",
+              borderRadius: "10px",
+              "&:hover": {
+                backgroundColor: "#7FFFD4",
+              },
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              <ManageAccountsRoundedIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="User Management"
+              sx={{ opacity: open ? 1 : 0 }}
+            />
+          </ListItemButton>
+          <ListItemButton
+            // onClick={handleAdminClick}
+            sx={{
+              minHeight: 48,
+              justifyContent: open ? "initial" : "center",
+              px: 2.5,
+              marginLeft: "20px",
+              marginRight: "20px",
+              borderRadius: "10px",
+              "&:hover": {
+                backgroundColor: "#7FFFD4",
+              },
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              <AutoStoriesRoundedIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Book Management"
+              sx={{ opacity: open ? 1 : 0 }}
+            />
+          </ListItemButton>
+          <ListItemButton
+            className="listeItemButton"
+            // onClick={handleAdminClick}
+            sx={{
+              minHeight: 48,
+              justifyContent: open ? "initial" : "center",
+              px: 2.5,
+              marginLeft: "20px",
+              marginRight: "20px",
+              borderRadius: "10px",
+              "&:hover": {
+                backgroundColor: "#7FFFD4",
+              },
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              <DragIndicatorRoundedIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Table Management"
+              sx={{ opacity: open ? 1 : 0 }}
+            />
+          </ListItemButton>
+        </ListItem>
+      </Drawer>
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <DrawerHeader />
+      </Box>
+    </Box>
+  );
+}
+
+{
+  /* <ListItemButton
             // onClick={handleAdminClick}
             sx={{
               minHeight: 48,
@@ -292,100 +404,9 @@ export default function SideBar() {
               primary="Book Categories"
               sx={{ opacity: open ? 1 : 0 }}
             />
-            {/* {openAdmin ? <ExpandLess /> : <ExpandMore />} */}
-          </ListItemButton>
-          {/* <Collapse in={openAdmin} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Users" />
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Settings" />
-              </ListItemButton>
-            </List>
-          </Collapse> */}
-        </ListItem>
-
-        <ListItem disablePadding sx={{ display: "block" }}>
-          <ListItemButton
-            onClick={handleBooksClick}
-            sx={{
-              minHeight: 48,
-              justifyContent: open ? "initial" : "center",
-              px: 2.5,
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-              }}
-            >
-              <StyleRoundedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Books" sx={{ opacity: open ? 1 : 0 }} />
-            {openBooks ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={openBooks} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <MenuBookRoundedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Books" />
-              </ListItemButton>
-            </List>
-          </Collapse>
-        </ListItem>
-        <ListItem disablePadding sx={{ display: "block" }}>
-          <ListItemButton
-            onClick={handleTableClick}
-            sx={{
-              minHeight: 48,
-              justifyContent: open ? "initial" : "center",
-              px: 2.5,
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-              }}
-            >
-              <TableRestaurantRoundedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Tables" sx={{ opacity: open ? 1 : 0 }} />
-            {openTables ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={openTables} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <EventRoundedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Reserve Table" />
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <FormatListBulletedRoundedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Schedule List" />
-              </ListItemButton>
-            </List>
-          </Collapse>
-        </ListItem>
-      </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-      </Box>
-    </Box>
-  );
+             {openAdmin ? <ExpandLess /> : <ExpandMore />} 
+          </ListItemButton> */
+}
+{
+  /* <Collapse in={openAdmin} timeout="auto" unmountOnExit> */
 }
