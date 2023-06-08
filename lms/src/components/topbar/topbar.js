@@ -163,7 +163,10 @@ export default function TopBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed">
+      <AppBar
+        position="fixed"
+        sx={{ backgroundColor: "#ffffff", color: "#2f2f2f" }}
+      >
         <Toolbar>
           <IconButton
             size="large"
@@ -181,7 +184,7 @@ export default function TopBar() {
             component="div"
             sx={{ display: { xs: "none", sm: "block" } }}
           >
-            MUI
+            Library System
           </Typography>
           <Search>
             <SearchIconWrapper>
