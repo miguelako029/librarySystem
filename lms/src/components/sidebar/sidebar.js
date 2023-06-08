@@ -38,6 +38,7 @@ import AutoStoriesRoundedIcon from "@mui/icons-material/AutoStoriesRounded";
 import DragIndicatorRoundedIcon from "@mui/icons-material/DragIndicatorRounded";
 import "../sidebar/sidebar.css";
 import { useNavigate } from "react-router-dom";
+import { useAppStore } from "../../AppStore";
 
 const drawerWidth = 270;
 
@@ -71,24 +72,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-// const AppBar = styled(MuiAppBar, {
-//   shouldForwardProp: prop => prop !== "open",
-// })(({ theme, open }) => ({
-//   zIndex: theme.zIndex.drawer + 1,
-//   transition: theme.transitions.create(["width", "margin"], {
-//     easing: theme.transitions.easing.sharp,
-//     duration: theme.transitions.duration.leavingScreen,
-//   }),
-//   ...(open && {
-//     marginLeft: drawerWidth,
-//     width: `calc(100% - ${drawerWidth}px)`,
-//     transition: theme.transitions.create(["width", "margin"], {
-//       easing: theme.transitions.easing.sharp,
-//       duration: theme.transitions.duration.enteringScreen,
-//     }),
-//   }),
-// }));
-
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: prop => prop !== "open",
 })(({ theme, open }) => ({
@@ -108,8 +91,10 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer() {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  // const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
+  // const updateOpen = useAppStore(state => state.UpdateOpen);
+  const open = useAppStore(state => state.dopen);
 
   // const handleDrawerOpen = () => {
   //   setOpen(true);
@@ -122,6 +107,7 @@ export default function MiniDrawer() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
+      <Box height={30} />
       {/* <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
@@ -143,8 +129,7 @@ export default function MiniDrawer() {
       </AppBar> */}
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          {/* <IconButton onClick={handleDrawerClose}> */}
-          <IconButton onClick={() => setOpen(!open)}>
+          <IconButton>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
@@ -170,7 +155,7 @@ export default function MiniDrawer() {
               },
             }}
             onClick={event => {
-              setOpen(true);
+              // setOpen(true);
               navigate("/");
             }}
           >
@@ -211,7 +196,7 @@ export default function MiniDrawer() {
               },
             }}
             onClick={() => {
-              setOpen(true);
+              // setOpen(true);
               navigate("/bookloan");
             }}
           >
