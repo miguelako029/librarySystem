@@ -1,5 +1,11 @@
 import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
+import "../sidebar/sidebar.css";
+import { useNavigate } from "react-router-dom";
+import { useAppStore } from "../../AppStore";
+
+import { Link } from "react-router-dom";
+
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
@@ -8,9 +14,7 @@ import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-// import Label from "@mui/materia/Label";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
@@ -18,27 +22,16 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import Collapse from "@mui/material/Collapse";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import SpaceDashboardRoundedIcon from "@mui/icons-material/SpaceDashboardRounded";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
-import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
-import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import DashboardCustomizeRoundedIcon from "@mui/icons-material/DashboardCustomizeRounded";
-import StyleRoundedIcon from "@mui/icons-material/StyleRounded";
-import TableRestaurantRoundedIcon from "@mui/icons-material/TableRestaurantRounded";
-import EventRoundedIcon from "@mui/icons-material/EventRounded";
-import FormatListBulletedRoundedIcon from "@mui/icons-material/FormatListBulletedRounded";
-import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
-import AutoStoriesRoundedIcon from "@mui/icons-material/AutoStoriesRounded";
-import DragIndicatorRoundedIcon from "@mui/icons-material/DragIndicatorRounded";
-import "../sidebar/sidebar.css";
-import { useNavigate } from "react-router-dom";
-import { useAppStore } from "../../AppStore";
+
+import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
+import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
+import EventAvailableOutlinedIcon from "@mui/icons-material/EventAvailableOutlined";
+
+import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
+import PlaylistAddOutlinedIcon from "@mui/icons-material/PlaylistAddOutlined";
+import AddToPhotosOutlinedIcon from "@mui/icons-material/AddToPhotosOutlined";
 
 const drawerWidth = 270;
 
@@ -138,246 +131,105 @@ export default function MiniDrawer() {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <p className="NavLabel">Main</p>
-        <ListItem disablePadding sx={{ display: "block" }}>
-          <ListItemButton
-            // onClick={handleAdminClick}
-            sx={{
-              minHeight: 48,
-              justifyContent: open ? "initial" : "center",
-              px: 2.5,
-              marginLeft: "20px",
-              marginRight: "20px",
-              borderRadius: "10px",
 
-              "&:hover": {
-                backgroundColor: "#FEC4B7 ",
-              },
-            }}
-            onClick={event => {
-              // setOpen(true);
-              navigate("/");
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-                color: "#F14722",
-              }}
-            >
-              <SpaceDashboardRoundedIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Dashboard"
-              sx={{
-                opacity: open ? 1 : 0,
-                fontFamily: "Varela Round, sans-serif",
-              }}
-            />
-          </ListItemButton>
-        </ListItem>
+        <List>
+          {[
+            "Dashboard",
+            "Catalog",
+            "Search and Discovery",
+            "Borrowing",
+            "Reservations/Holds",
+          ].map((text, index) => {
+            const urls = [
+              "/",
+              "/catalog",
+              "/catalogsearch",
+              "/bookLoan",
+              "/reservation",
+            ]; // Replace with your desired URLs
 
-        <p className="NavLabel">Services</p>
+            return (
+              <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                <ListItemButton
+                  component={Link}
+                  to={urls[index]}
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                    marginLeft: "10px",
+                    marginRight: "10px",
+                    borderRadius: "10px",
 
-        <ListItem disablePadding sx={{ display: "block" }}>
-          <ListItemButton
-            // onClick={handleAdminClick}
-            sx={{
-              minHeight: 48,
-              justifyContent: open ? "initial" : "center",
-              px: 2.5,
-              marginLeft: "20px",
-              marginRight: "20px",
-              borderRadius: "10px",
-              "&:hover": {
-                backgroundColor: "#FEC4B7 ",
-              },
-            }}
-            onClick={() => {
-              // setOpen(true);
-              navigate("/bookloan");
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-                color: "#F14722",
-              }}
-            >
-              <StyleRoundedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Book Loan" sx={{ opacity: open ? 1 : 0 }} />
-          </ListItemButton>
-          <ListItemButton
-            // onClick={handleAdminClick}
-            sx={{
-              minHeight: 48,
-              justifyContent: open ? "initial" : "center",
-              px: 2.5,
-              marginLeft: "20px",
-              marginRight: "20px",
-              borderRadius: "10px",
-              "&:hover": {
-                backgroundColor: "#FEC4B7 ",
-              },
-            }}
-            onClick={() => {
-              navigate("/tablereserve");
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-                color: "#F14722",
-              }}
-            >
-              <TableRestaurantRoundedIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Table Reservation"
-              sx={{ opacity: open ? 1 : 0 }}
-            />
-          </ListItemButton>
-        </ListItem>
+                    "&:hover": {
+                      backgroundColor: "#FEC4B7 ",
+                    },
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                      color: "#F14722",
+                    }}
+                  >
+                    {index === 0 && <SpaceDashboardOutlinedIcon />}
+                    {index === 1 && <LibraryBooksOutlinedIcon />}
+                    {index === 2 && <SearchOutlinedIcon />}
+                    {index === 3 && <StyleOutlinedIcon />}
+                    {index === 4 && <EventAvailableOutlinedIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
+        </List>
 
-        <p className="NavLabel">Maintenance</p>
+        <Divider />
 
-        <ListItem disablePadding sx={{ display: "block" }}>
-          <ListItemButton
-            // onClick={handleAdminClick}
-            sx={{
-              minHeight: 48,
-              justifyContent: open ? "initial" : "center",
-              px: 2.5,
-              marginLeft: "20px",
-              marginRight: "20px",
-              borderRadius: "10px",
-              "&:hover": {
-                backgroundColor: "#FEC4B7 ",
-              },
-            }}
-            onClick={() => {
-              navigate("/people");
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-                color: "#F14722",
-              }}
-            >
-              <ManageAccountsRoundedIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="User Management"
-              sx={{ opacity: open ? 1 : 0 }}
-            />
-          </ListItemButton>
-          <ListItemButton
-            // onClick={handleAdminClick}
-            sx={{
-              minHeight: 48,
-              justifyContent: open ? "initial" : "center",
-              px: 2.5,
-              marginLeft: "20px",
-              marginRight: "20px",
-              borderRadius: "10px",
-              "&:hover": {
-                backgroundColor: "#FEC4B7 ",
-              },
-            }}
-            onClick={() => {
-              navigate("/booksettings");
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-                color: "#F14722",
-              }}
-            >
-              <AutoStoriesRoundedIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Book Management"
-              sx={{ opacity: open ? 1 : 0 }}
-            />
-          </ListItemButton>
-          <ListItemButton
-            className="listeItemButton"
-            // onClick={handleAdminClick}
-            sx={{
-              minHeight: 48,
-              justifyContent: open ? "initial" : "center",
-              px: 2.5,
-              marginLeft: "20px",
-              marginRight: "20px",
-              borderRadius: "10px",
-              "&:hover": {
-                backgroundColor: "#FEC4B7 ",
-              },
-            }}
-            onClick={() => {
-              navigate("/tablesettings");
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-                color: "#F14722",
-              }}
-            >
-              <DragIndicatorRoundedIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Table Management"
-              sx={{ opacity: open ? 1 : 0 }}
-            />
-          </ListItemButton>
-        </ListItem>
+        <List>
+          {["User Management", "Categories", "Books"].map((text, index) => {
+            const urls = ["/userSettings", "/catalogSettings", "/bookSettings"]; // Replace with your desired URLs
+
+            return (
+              <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                <ListItemButton
+                  component={Link}
+                  to={urls[index]}
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                    marginLeft: "10px",
+                    marginRight: "10px",
+                    borderRadius: "10px",
+
+                    "&:hover": {
+                      backgroundColor: "#FEC4B7 ",
+                    },
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                      color: "#F14722",
+                    }}
+                  >
+                    {index === 0 && <ManageAccountsOutlinedIcon />}
+                    {index === 1 && <PlaylistAddOutlinedIcon />}
+                    {index === 2 && <AddToPhotosOutlinedIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
+        </List>
       </Drawer>
     </Box>
   );
-}
-
-{
-  /* <ListItemButton
-            // onClick={handleAdminClick}
-            sx={{
-              minHeight: 48,
-              justifyContent: open ? "initial" : "center",
-              px: 2.5,
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-                color: "#F14722",
-              }}
-            >
-              <DashboardCustomizeRoundedIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Book Categories"
-              sx={{ opacity: open ? 1 : 0 }}
-            />
-             {openAdmin ? <ExpandLess /> : <ExpandMore />} 
-          </ListItemButton> */
-}
-{
-  /* <Collapse in={openAdmin} timeout="auto" unmountOnExit> */
 }

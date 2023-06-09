@@ -14,7 +14,7 @@ export default function books() {
 
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           {" "}
-          <h1>Book List</h1>
+          <h1>Borrowing</h1>
         </Box>
       </Box>
     </>

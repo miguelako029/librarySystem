@@ -5,8 +5,10 @@ import Dashboard from "./pages/dashboard";
 import Users from "./pages/users";
 import Books from "./pages/books";
 import BookManagement from "./pages/bookManagement";
-import Tables from "./pages/tableReservation";
-import TablesManagement from "./pages/tableManagement";
+import Reservation from "./pages/reservation";
+import Catalog from "./pages/catalogs";
+import CatalogSettings from "./pages/catalogSettings";
+import BookLoan from "./pages/bookloan";
 
 export default function App() {
   return (
@@ -15,19 +17,21 @@ export default function App() {
         <Routes>
           <Route path="/" exact element={<Dashboard />}></Route>
 
-          <Route path="/bookloan" exact element={<Books />}></Route>
-          <Route path="/tablereserve" exact element={<Tables />}></Route>
+          <Route path="/catalog" exact element={<Catalog />}></Route>
+          <Route path="/catalogsearch" exact element={<Books />}></Route>
 
-          <Route path="/people" exact element={<Users />}></Route>
+          <Route path="/bookLoan" exact element={<BookLoan />}></Route>
+          <Route path="/reservation" exact element={<Reservation />}></Route>
+          <Route path="/userSettings" exact element={<Users />}></Route>
           <Route
-            path="/booksettings"
+            path="/catalogSettings"
             exact
-            element={<BookManagement />}
+            element={<CatalogSettings />}
           ></Route>
           <Route
-            path="/tablesettings"
+            path="/bookSettings"
             exact
-            element={<TablesManagement />}
+            element={<BookManagement />}
           ></Route>
         </Routes>
       </BrowserRouter>

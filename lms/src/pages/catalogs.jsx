@@ -4,10 +4,9 @@ import SideBar from "../components/sidebar/sidebar";
 import { Typography, Box } from "@mui/material";
 import TopBar from "../components/topbar/topbar";
 
-export default function home() {
+export default function books() {
   return (
     <>
-      {" "}
       <TopBar />
       <Box height={30} />
       <Box sx={{ display: "flex" }}>
@@ -15,7 +14,7 @@ export default function home() {
 
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           {" "}
-          <h1>Table Reservation</h1>
+          <h1>Catalog</h1>
         </Box>
       </Box>
     </>
