@@ -98,7 +98,7 @@ export default function MiniDrawer() {
   // };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex" }} className="box">
       <CssBaseline />
       <Box height={30} />
       {/* <AppBar position="fixed" open={open}>
@@ -132,7 +132,7 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
 
-        <List>
+        <List className="list">
           {[
             "Dashboard",
             "Catalog",

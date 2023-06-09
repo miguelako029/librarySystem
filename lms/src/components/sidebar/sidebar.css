@@ -1,4 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Varela+Round&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Varela+Round&display=swap"); */
+
+.css-10hburv-MuiTypography-root {
+  font-size: 11pt;
+  font-family: "Varela Round", sans-serif;
+  font-weight: 600;
+}
 
 .NavLabel {
   font-family: "Varela Round", sans-serif;

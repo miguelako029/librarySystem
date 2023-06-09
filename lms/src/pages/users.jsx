@@ -3,6 +3,7 @@ import SideBar from "../components/sidebar/sidebar";
 
 import { Typography, Box } from "@mui/material";
 import TopBar from "../components/topbar/topbar";
+import CrudTable from "../components/userManagement/userTable";
 
 export default function books() {
   return (
@@ -15,6 +16,7 @@ export default function books() {
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           {" "}
           <h1>User Management</h1>
+          <CrudTable />
         </Box>
       </Box>
     </>
