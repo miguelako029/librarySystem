@@ -122,7 +122,7 @@ export default function StickyHeadTable() {
           onChange={(e, v) => filterData(v)}
           getOptionLabel={rows => rows.firstName || ""}
           renderInput={params => (
-            <TextField {...params} size="small" label="Search Products" />
+            <TextField {...params} size="small" label="Search" />
           )}
         />
         <Typography
