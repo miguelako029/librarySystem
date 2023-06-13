@@ -8,7 +8,7 @@ import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyD9nEUEgzehLxeUuKbHmKHesf4FVkyF9ug",
   authDomain: "library-system-4eed1.firebaseapp.com",
-  databaseURL: "https://library-system-4eed1-default-rtdb.firebaseio.com",
+  databaseURL: "https://library-system-4eed1-default-rtdb.firebaseio.com/",
   projectId: "library-system-4eed1",
   storageBucket: "library-system-4eed1.appspot.com",
   messagingSenderId: "87617920475",
