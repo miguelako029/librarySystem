@@ -142,19 +142,14 @@ export default function StickyHeadTable() {
       </div>
 
       {/* header */}
-      <Typography
-        gutterBottom
-        variant="h5"
-        component="div"
-        // sx={{ padding: "20px" }}
-      >
+      <Typography gutterBottom variant="h5" component="div">
         Products List
       </Typography>
       <Stack
         direction="row"
         spacing={2}
         className="my-2 mb-2"
-        sx={{ marginBottom: "20px" }}
+        sx={{ marginBottom: "20px", width: "80%", alignContent: "center" }}
       >
         <Autocomplete
           disablePortal
@@ -182,7 +177,7 @@ export default function StickyHeadTable() {
       </Stack>
       <Paper
         sx={{
-          width: "100%",
+          width: "80%",
           overflow: "hidden",
           borderRadius: "10px",
           boxShadow: "2",
