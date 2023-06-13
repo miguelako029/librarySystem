@@ -1,9 +1,9 @@
 import React from "react";
-import SideBar from "../components/sidebar/sidebar";
+import SideBar from "../../components/sidebar/sidebar";
 
 import { Typography, Box } from "@mui/material";
-import TopBar from "../components/topbar/topbar";
-import CrudTable from "../components/userManagement/userTable";
+import TopBar from "../../components/topbar/topbar";
+import CrudTable from "../userManagement/userTable";
 
 export default function books() {
   return (
@@ -13,9 +13,9 @@ export default function books() {
       <Box sx={{ display: "flex" }}>
         <SideBar />
 
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: 5 }}>
           {" "}
-          <h1>User Management</h1>
+          {/* <h1>User Management</h1> */}
           <CrudTable />
         </Box>
       </Box>
