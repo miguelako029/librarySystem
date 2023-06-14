@@ -1,4 +1,3 @@
-// Import the necessary dependencies
 import React, { useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -17,14 +16,7 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { db } from "../../firebase-config";
 import AddUser from "../userManagement/addUser";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Swal from "sweetalert2";
@@ -33,14 +25,13 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { useAppStore } from "../../AppStore";
 
 export default function StickyHeadTable() {
-  //modal//
   const [open, setOpen] = useState(false);
-
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const empCollectionRef = collection(db, "users");
   const setRows = useAppStore(state => state.setRows);
   const rows = useAppStore(state => state.rows);
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -49,31 +40,14 @@ export default function StickyHeadTable() {
     setOpen(false);
   };
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 600,
-    height: "35vh",
-    bgcolor: "background.paper",
-    borderRadius: 5,
-    boxShadow: 24,
-    p: 4,
-    "@media (prefers-reduced-motion: no-preference)": {
-      width: 500,
-    },
-  };
-
-  //table
-
   useEffect(() => {
     getUsers();
   }, []);
 
   const getUsers = async () => {
-    const data = await getDocs(empCollectionRef);
-    setRows(data.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+    const querySnapshot = await getDocs(empCollectionRef);
+    const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+    setRows(data);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -81,7 +55,7 @@ export default function StickyHeadTable() {
   };
 
   const handleChangeRowsPerPage = event => {
-    setRowsPerPage(event.target.value);
+    setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
@@ -119,29 +93,38 @@ export default function StickyHeadTable() {
 
   return (
     <>
-      {/* modal */}
-      <div>
-        <Modal
-          keepMounted
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="keep-mounted-modal-title"
-          aria-describedby="keep-mounted-modal-description"
-        >
-          <Box sx={style}>
-            <AddUser closeEvent={handleClose} />
-          </Box>
-        </Modal>
-      </div>
-
-      {/* header */}
-      <Typography
-        gutterBottom
-        variant="h5"
-        component="div"
-        sx={{ color: "#818181" }}
+      {/* Modal */}
+      <Modal
+        keepMounted
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="keep-mounted-modal-title"
+        aria-describedby="keep-mounted-modal-description"
       >
-        Account List
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 600,
+            height: "40vh",
+            bgcolor: "background.paper",
+            borderRadius: 5,
+            boxShadow: 24,
+            p: 4,
+            "@media (prefers-reduced-motion: no-preference)": {
+              width: 500,
+            },
+          }}
+        >
+          <AddUser closeEvent={handleClose} />
+        </Box>
+      </Modal>
+
+      {/* Header */}
+      <Typography gutterBottom variant="h5" component="div">
+        Products List
       </Typography>
       <Stack
         direction="row"
@@ -155,7 +138,7 @@ export default function StickyHeadTable() {
           options={rows}
           sx={{ width: 300 }}
           onChange={(e, v) => filterData(v)}
-          getOptionLabel={rows => rows.fname || ""}
+          getOptionLabel={row => row.fname || ""}
           renderInput={params => (
             <TextField {...params} size="small" label="Search" />
           )}
@@ -188,85 +171,48 @@ export default function StickyHeadTable() {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                {/* {columns.map(column => ( */}
-                <TableCell
-                  // key={column.id}
-                  align="left"
-                  style={{ minWidth: "100px" }}
-                >
+                <TableCell align="left" style={{ minWidth: "100px" }}>
                   Firstname
                 </TableCell>
-                <TableCell
-                  // key={column.id}
-                  align="left"
-                  style={{ minWidth: "100px" }}
-                >
+                <TableCell align="left" style={{ minWidth: "100px" }}>
                   Lastname
                 </TableCell>
-                <TableCell
-                  // key={column.id}
-                  align="left"
-                  style={{ minWidth: "100px" }}
-                >
+                <TableCell align="left" style={{ minWidth: "100px" }}>
                   Age
                 </TableCell>
-                <TableCell
-                  // key={column.id}
-                  align="left"
-                  // style={{ minWidth: "100px" }}
-                >
-                  Actions
-                </TableCell>
-
-                {/* ))} */}
+                <TableCell align="left">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(row => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1}>
-                      {/* {columns.map(column => {
-                      const value = row[column.id];
-                      return ( */}
-                      <TableCell key={row.id} align="left">
-                        {row.fname}
-                      </TableCell>
-                      <TableCell key={row.id} align="left">
-                        {row.lname}
-                      </TableCell>
-                      <TableCell key={row.id} align="left">
-                        {row.age}
-                      </TableCell>
-                      <TableCell key={row.id} align="left">
-                        <Stack spacing={2} direction="row">
-                          <EditIcon
-                            style={{
-                              fontSize: "20px",
-                              color: "blue",
-                              cursor: "pointer",
-                            }}
-                            className="cursor-pointer"
-                            // onClick={() => editUser(row.id)}
-                          />
-                          <DeleteIcon
-                            style={{
-                              fontSize: "20px",
-                              color: "darkred",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => {
-                              deleteUser(row.id);
-                            }}
-                          />
-                        </Stack>
-                      </TableCell>
-
-                      {/* ); })} */}
-                    </TableRow>
-                  );
-                })}
+                .map(row => (
+                  <TableRow key={row.id} hover role="checkbox" tabIndex={-1}>
+                    <TableCell align="left">{row.fname}</TableCell>
+                    <TableCell align="left">{row.lname}</TableCell>
+                    <TableCell align="left">{row.age}</TableCell>
+                    <TableCell align="left">
+                      <Stack spacing={2} direction="row">
+                        <EditIcon
+                          style={{
+                            fontSize: "20px",
+                            color: "blue",
+                            cursor: "pointer",
+                          }}
+                          className="cursor-pointer"
+                        />
+                        <DeleteIcon
+                          style={{
+                            fontSize: "20px",
+                            color: "darkred",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => deleteUser(row.id)}
+                        />
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>

@@ -36,27 +36,7 @@ export default function AddUser({ closeEvent }) {
   // const [rows, setRows] = useState([]);
   const setRows = useAppStore(state => state.setRows);
   const empCollectionRef = collection(db, "users");
-
-  // const [membershipType, setMembershipType] = useState("");
-  // const [selectedDateTime, setSelectedDateTime] = useState(null);
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  // const handleSubmit = e => {
-  //   e.preventDefault();
-  //   // Perform form submission logic here
-  //   console.log("Submitted name:", name);
-  //   console.log("Submitted email:", email);
-  //   console.log("Submitted gender:", gender);
-  //   console.log("Submitted membership type:", membershipType);
-  //   handleClose();
-  // };
+  const [error, setError] = useState(false);
 
   const handleFnameChange = event => {
     setFname(event.target.value);
@@ -69,18 +49,35 @@ export default function AddUser({ closeEvent }) {
   };
 
   const createUser = async () => {
-    await addDoc(empCollectionRef, {
-      fname: fname,
-      lname: lname,
-      age: age,
-    });
-    getUsers();
-    closeEvent();
+    if (fname.trim() === "" || lname.trim() === "" || age.trim() === "") {
+      closeEvent();
+      Swal.fire("Error", "Please complete all the field", "error").then(() => {
+        setError(true);
+      });
+      // Prevent adding user if any field is empty
+    } else {
+      await addDoc(empCollectionRef, {
+        fname: fname,
+        lname: lname,
+        age: age,
+      });
+      getUsers();
+      closeEvent();
 
-    console.log(fname);
-    console.log(lname);
-    console.log(age);
-    Swal.fire("Submitted!", "Your file has been submitted.", "success");
+      console.log(fname);
+      console.log(lname);
+      console.log(age);
+      setFname("");
+      setLname("");
+      setAge("");
+      Swal.fire("Submitted!", "Your file has been submitted.", "success");
+    }
+
+    const user = {
+      fname,
+      lname,
+      age,
+    };
   };
 
   const getUsers = async () => {
@@ -117,7 +114,9 @@ export default function AddUser({ closeEvent }) {
         <Grid item xs={6}>
           <TextField
             id="outlined-basic"
+            error={error && fname.trim() === ""}
             label="First Name"
+            type="string"
             value={fname}
             onChange={handleFnameChange}
             variant="outlined"
@@ -130,6 +129,7 @@ export default function AddUser({ closeEvent }) {
           <TextField
             id="outlined-basic"
             label="Last Name"
+            error={error && lname.trim() === ""}
             value={lname}
             onChange={handleLnameChange}
             variant="outlined"
@@ -142,6 +142,7 @@ export default function AddUser({ closeEvent }) {
           <TextField
             id="outlined-basic"
             label="Age"
+            error={error && age.trim() === ""}
             value={age}
             onChange={handleAgeChange}
             placeholder="20"
@@ -156,6 +157,9 @@ export default function AddUser({ closeEvent }) {
           <Button
             variant="contained"
             onClick={createUser}
+            // disabled={
+            //   fname.trim() === "" || lname.trim() === "" || age.trim() === ""
+            // }
             sx={{ minWidth: "100%" }}
           >
             Submit
