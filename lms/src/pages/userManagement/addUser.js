@@ -44,7 +44,7 @@ export default function AddUser({ closeEvent }) {
     setOpen(true);
   };
 
- 0   const handleClose = () => {
+  const handleClose = () => {
     setOpen(false);
   };
 
@@ -76,7 +76,11 @@ export default function AddUser({ closeEvent }) {
     });
     getUsers();
     closeEvent();
-    Swal.fire("Submitted!", "Your file has been submitted.", "Success");
+
+    console.log(fname);
+    console.log(lname);
+    console.log(age);
+    Swal.fire("Submitted!", "Your file has been submitted.", "success");
   };
 
   const getUsers = async () => {
@@ -134,7 +138,7 @@ export default function AddUser({ closeEvent }) {
             sx={{ minWidth: "100%" }}
           />
         </Grid>
-        <Grid item xs>
+        <Grid item xs={12}>
           <TextField
             id="outlined-basic"
             label="Age"
@@ -148,8 +152,12 @@ export default function AddUser({ closeEvent }) {
             sx={{ minWidth: "100%" }}
           />
         </Grid>
-        <Grid item xs>
-          <Button variant="contained" onClick={createUser}>
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            onClick={createUser}
+            sx={{ minWidth: "100%" }}
+          >
             Submit
           </Button>
         </Grid>

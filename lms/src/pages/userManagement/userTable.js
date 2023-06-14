@@ -56,7 +56,7 @@ export default function StickyHeadTable() {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: 600,
-    height: "40vh",
+    height: "35vh",
     bgcolor: "background.paper",
     borderRadius: 5,
     boxShadow: 24,
