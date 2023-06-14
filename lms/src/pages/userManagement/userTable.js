@@ -35,13 +35,12 @@ import { useAppStore } from "../../AppStore";
 export default function StickyHeadTable() {
   //modal//
   const [open, setOpen] = useState(false);
-  const setRows = useAppStore(state => state.setRows);
-  const rows = useAppStore(state => state.rows);
-  // const [rows, setRows] = useState([]);
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const empCollectionRef = collection(db, "users");
-
+  const setRows = useAppStore(state => state.setRows);
+  const rows = useAppStore(state => state.rows);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -82,7 +81,7 @@ export default function StickyHeadTable() {
   };
 
   const handleChangeRowsPerPage = event => {
-    setRowsPerPage(+event.target.value);
+    setRowsPerPage(event.target.value);
     setPage(0);
   };
 
@@ -136,8 +135,13 @@ export default function StickyHeadTable() {
       </div>
 
       {/* header */}
-      <Typography gutterBottom variant="h5" component="div">
-        Products List
+      <Typography
+        gutterBottom
+        variant="h5"
+        component="div"
+        sx={{ color: "#818181" }}
+      >
+        Account List
       </Typography>
       <Stack
         direction="row"
