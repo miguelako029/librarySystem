@@ -30,14 +30,17 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Swal from "sweetalert2";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-
-const rows = [];
+import { useAppStore } from "../../AppStore";
 
 export default function StickyHeadTable() {
   //modal//
   const [open, setOpen] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const setRows = useAppStore(state => state.setRows);
+  const rows = useAppStore(state => state.rows);
+  // const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const empCollectionRef = collection(db, "users");
 
   const handleOpen = () => {
     setOpen(true);
@@ -47,32 +50,23 @@ export default function StickyHeadTable() {
     setOpen(false);
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    // Perform form submission logic here
-    console.log("Submitted username:", username);
-    console.log("Submitted password:", password);
-    handleClose();
-  };
   const style = {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 1200,
-    borderRadius: 5,
+    width: 600,
+    height: "40vh",
     bgcolor: "background.paper",
-    // border: "2px solid #000",
+    borderRadius: 5,
     boxShadow: 24,
     p: 4,
+    "@media (prefers-reduced-motion: no-preference)": {
+      width: 500,
+    },
   };
 
   //table
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [rows, setRows] = useState([]);
-  const empCollectionRef = collection(db, "users");
 
   useEffect(() => {
     getUsers();
@@ -149,7 +143,7 @@ export default function StickyHeadTable() {
         direction="row"
         spacing={2}
         className="my-2 mb-2"
-        sx={{ marginBottom: "20px", width: "80%", alignContent: "center" }}
+        sx={{ marginBottom: "20px", alignContent: "center" }}
       >
         <Autocomplete
           disablePortal
@@ -157,7 +151,7 @@ export default function StickyHeadTable() {
           options={rows}
           sx={{ width: 300 }}
           onChange={(e, v) => filterData(v)}
-          getOptionLabel={rows => rows.firstName || ""}
+          getOptionLabel={rows => rows.fname || ""}
           renderInput={params => (
             <TextField {...params} size="small" label="Search" />
           )}
@@ -177,7 +171,6 @@ export default function StickyHeadTable() {
       </Stack>
       <Paper
         sx={{
-          width: "80%",
           overflow: "hidden",
           borderRadius: "10px",
           boxShadow: "2",
@@ -234,10 +227,10 @@ export default function StickyHeadTable() {
                       const value = row[column.id];
                       return ( */}
                       <TableCell key={row.id} align="left">
-                        {row.firstName}
+                        {row.fname}
                       </TableCell>
                       <TableCell key={row.id} align="left">
-                        {row.lastName}
+                        {row.lname}
                       </TableCell>
                       <TableCell key={row.id} align="left">
                         {row.age}
