@@ -16,6 +16,7 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { db } from "../../firebase-config";
 import AddUser from "../userManagement/addUser";
+import EditUser from "../userManagement/editUser";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -26,7 +27,9 @@ import { useAppStore } from "../../AppStore";
 
 export default function StickyHeadTable() {
   const [open, setOpen] = useState(false);
+  const [openUser, setOpenUser] = useState(false);
   const [page, setPage] = useState(0);
+  const [formid, setFormid] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const empCollectionRef = collection(db, "users");
   const setRows = useAppStore(state => state.setRows);
@@ -38,6 +41,14 @@ export default function StickyHeadTable() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleOpenUser = () => {
+    setOpenUser(true);
+  };
+
+  const handleCloseUser = () => {
+    setOpenUser(false);
   };
 
   useEffect(() => {
@@ -91,6 +102,12 @@ export default function StickyHeadTable() {
     }
   };
 
+  const editData = (id, fname, lname, age) => {
+    const data = { id: id, fname: fname, lname: lname, age: age };
+    setFormid(data);
+    handleOpenUser();
+  };
+
   return (
     <>
       {/* Modal */}
@@ -119,6 +136,34 @@ export default function StickyHeadTable() {
           }}
         >
           <AddUser closeEvent={handleClose} />
+        </Box>
+      </Modal>
+
+      <Modal
+        keepMounted
+        open={openUser}
+        onClose={handleCloseUser}
+        aria-labelledby="keep-mounted-modal-title"
+        aria-describedby="keep-mounted-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 600,
+            height: "40vh",
+            bgcolor: "background.paper",
+            borderRadius: 5,
+            boxShadow: 24,
+            p: 4,
+            "@media (prefers-reduced-motion: no-preference)": {
+              width: 500,
+            },
+          }}
+        >
+          <EditUser closeEvent={handleCloseUser} fid={formid} />
         </Box>
       </Modal>
 
@@ -172,10 +217,10 @@ export default function StickyHeadTable() {
             <TableHead>
               <TableRow>
                 <TableCell align="left" style={{ minWidth: "100px" }}>
-                  Firstname
+                  First Name
                 </TableCell>
                 <TableCell align="left" style={{ minWidth: "100px" }}>
-                  Lastname
+                  Last Name
                 </TableCell>
                 <TableCell align="left" style={{ minWidth: "100px" }}>
                   Age
@@ -200,6 +245,9 @@ export default function StickyHeadTable() {
                             cursor: "pointer",
                           }}
                           className="cursor-pointer"
+                          onClick={() =>
+                            editData(row.id, row.fname, row.lname, row.age)
+                          }
                         />
                         <DeleteIcon
                           style={{
