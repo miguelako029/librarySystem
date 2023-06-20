@@ -124,14 +124,15 @@ export default function StickyHeadTable() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 600,
-            height: "40vh",
+            width: "auto",
+            height: "auto",
             bgcolor: "background.paper",
             borderRadius: 5,
             boxShadow: 24,
             p: 4,
             "@media (prefers-reduced-motion: no-preference)": {
-              width: 500,
+              // width: 400,
+              // transform: "translate(-87%, -110%)",
             },
           }}
         >
