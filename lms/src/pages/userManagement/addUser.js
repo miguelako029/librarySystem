@@ -92,7 +92,17 @@ export default function AddUser({ closeEvent }) {
   };
 
   const createUser = async () => {
-    if (fname.trim() === "" || lname.trim() === "") {
+    if (
+      fname.trim() === "" ||
+      lname.trim() === "" ||
+      emailAdd.trim() === "" ||
+      contactNo.trim() === "" ||
+      address.trim() === "" ||
+      // (birthday && birthday.trim && birthday.trim() === "") ||
+      city.trim() === "" ||
+      postal.trim() === "" ||
+      country.trim() === ""
+    ) {
       closeEvent();
       Swal.fire("Error", "Please complete all the field", "error").then(() => {
         setError(true);
@@ -126,7 +136,14 @@ export default function AddUser({ closeEvent }) {
       closeEvent();
       setFname("");
       setLname("");
-      setAge("");
+      setEmailAdd("");
+      setContact("");
+      setBirthday(null);
+      setAddress("");
+      setCountry("");
+      setPostal("");
+      setCity("");
+
       Swal.fire("Submitted!", "Your file has been submitted.", "success");
     }
 
