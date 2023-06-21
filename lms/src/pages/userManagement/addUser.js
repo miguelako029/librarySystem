@@ -18,7 +18,15 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  serverTimestamp,
+} from "firebase/firestore";
+
+import { Timestamp } from "firebase/firestore";
+import { getUnixTime } from "date-fns";
 import { db } from "../../firebase-config";
 import Swal from "sweetalert2";
 import { useAppStore } from "../../AppStore";
@@ -33,9 +41,18 @@ export default function AddUser({ closeEvent }) {
   //modal
   const [open, setOpen] = useState(false);
   //form
+
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
+  const [emailAdd, setEmailAdd] = useState("");
+  const [contactNo, setContact] = useState("");
+  const [birthday, setBirthday] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [city, setCity] = useState(null);
+  const [postal, setPostal] = useState(null);
+  const [country, setCountry] = useState(null);
   const [age, setAge] = useState("");
+
   // const [rows, setRows] = useState([]);
 
   //handling
@@ -49,29 +66,64 @@ export default function AddUser({ closeEvent }) {
   const handleLnameChange = event => {
     setLname(event.target.value);
   };
+  const handleEmailAddChange = event => {
+    setEmailAdd(event.target.value);
+  };
+  const handleBirthdayChange = date => {
+    setBirthday(date);
+  };
+  const handleAddressChange = event => {
+    setAddress(event.target.value);
+  };
+  const handleCityChange = event => {
+    setCity(event.target.value);
+  };
+  const handlePostalChange = event => {
+    setPostal(event.target.value);
+  };
+  const handleCountryChange = event => {
+    setCountry(event.target.value);
+  };
+  const handleContactChange = event => {
+    setContact(event.target.value);
+  };
   const handleAgeChange = event => {
     setAge(event.target.value);
   };
 
   const createUser = async () => {
-    if (fname.trim() === "" || lname.trim() === "" || age.trim() === "") {
+    if (fname.trim() === "" || lname.trim() === "") {
       closeEvent();
       Swal.fire("Error", "Please complete all the field", "error").then(() => {
         setError(true);
       });
       // Prevent adding user if any field is empty
     } else {
+      const birthdayDate = new Date(birthday);
+      if (isNaN(birthdayDate.getTime())) {
+        // Handle invalid date input
+        console.error("Invalid date format");
+        return;
+      }
+      const birthdayTimestamp = Timestamp.fromMillis(birthdayDate.getTime());
+
       await addDoc(empCollectionRef, {
         fname: fname,
         lname: lname,
+        emailAdd: emailAdd,
+        contactNo: contactNo,
+        birthday: birthdayTimestamp,
+        address: address,
+        city: city,
+        postal: postal,
+        country: country,
         age: age,
+        createdDate: serverTimestamp(),
       });
+
+      console.log(birthday);
       getUsers();
       closeEvent();
-
-      console.log(fname);
-      console.log(lname);
-      console.log(age);
       setFname("");
       setLname("");
       setAge("");
@@ -152,9 +204,9 @@ export default function AddUser({ closeEvent }) {
           <TextField
             id="outlined-basic"
             label="Email Address"
-            error={error && lname.trim() === ""}
-            value={lname}
-            onChange={handleLnameChange}
+            error={error && emailAdd.trim() === ""}
+            value={emailAdd}
+            onChange={handleEmailAddChange}
             variant="outlined"
             required
             sx={{ minWidth: "100%" }}
@@ -164,9 +216,9 @@ export default function AddUser({ closeEvent }) {
           <TextField
             id="outlined-basic"
             label="Contact No."
-            error={error && lname.trim() === ""}
-            value={lname}
-            onChange={handleLnameChange}
+            error={error && contactNo.trim() === ""}
+            value={contactNo}
+            onChange={handleContactChange}
             variant="outlined"
             required
             sx={{ minWidth: "100%" }}
@@ -174,16 +226,23 @@ export default function AddUser({ closeEvent }) {
         </Grid>
         <Grid item xs={6}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker variant="outlined" required sx={{ minWidth: "100%" }} />
+            <DatePicker
+              // error={error && birthday.trim() === ""}
+              variant="outlined"
+              required
+              sx={{ minWidth: "100%" }}
+              value={birthday}
+              onChange={handleBirthdayChange}
+            />
           </LocalizationProvider>
         </Grid>
         <Grid item xs={12}>
           <TextField
             id="outlined-basic"
             label="Address"
-            error={error && age.trim() === ""}
-            value={age}
-            onChange={handleAgeChange}
+            error={error && address.trim() === ""}
+            value={address}
+            onChange={handleAddressChange}
             placeholder="20"
             required
             variant="outlined"
@@ -195,12 +254,11 @@ export default function AddUser({ closeEvent }) {
           <TextField
             id="outlined-basic"
             label="City"
-            error={error && age.trim() === ""}
-            value={age}
-            onChange={handleAgeChange}
+            error={error && city.trim() === ""}
+            value={city}
+            onChange={handleCityChange}
             placeholder="20"
             required
-            type="number"
             variant="outlined"
             sx={{ minWidth: "100%" }}
           />
@@ -209,9 +267,9 @@ export default function AddUser({ closeEvent }) {
           <TextField
             id="outlined-basic"
             label="Postal code"
-            error={error && age.trim() === ""}
-            value={age}
-            onChange={handleAgeChange}
+            error={error && postal.trim() === ""}
+            value={postal}
+            onChange={handlePostalChange}
             placeholder="20"
             required
             type="number"
@@ -223,12 +281,11 @@ export default function AddUser({ closeEvent }) {
           <TextField
             id="outlined-basic"
             label="Country"
-            error={error && age.trim() === ""}
-            value={age}
-            onChange={handleAgeChange}
+            error={error && country.trim() === ""}
+            value={country}
+            onChange={handleCountryChange}
             placeholder="20"
             required
-            type="number"
             variant="outlined"
             sx={{ minWidth: "100%" }}
           />

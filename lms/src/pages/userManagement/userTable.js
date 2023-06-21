@@ -24,6 +24,7 @@ import Swal from "sweetalert2";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useAppStore } from "../../AppStore";
+import { Timestamp } from "firebase/firestore";
 
 export default function StickyHeadTable() {
   const [open, setOpen] = useState(false);
@@ -107,6 +108,10 @@ export default function StickyHeadTable() {
     setFormid(data);
     handleOpenUser();
   };
+
+  // const row = {
+  //   birthday: row.birthday, // Example birthday value
+  // };
 
   return (
     <>
@@ -224,8 +229,21 @@ export default function StickyHeadTable() {
                   Last Name
                 </TableCell>
                 <TableCell align="left" style={{ minWidth: "100px" }}>
-                  Age
+                  Email
                 </TableCell>
+                <TableCell align="left" style={{ minWidth: "100px" }}>
+                  Contact No.
+                </TableCell>
+                <TableCell align="left" style={{ minWidth: "100px" }}>
+                  Date of Birth
+                </TableCell>
+                <TableCell align="left" style={{ minWidth: "100px" }}>
+                  Address
+                </TableCell>
+                <TableCell align="left" style={{ minWidth: "100px" }}>
+                  Created Date
+                </TableCell>
+
                 <TableCell align="left">Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -236,7 +254,30 @@ export default function StickyHeadTable() {
                   <TableRow key={row.id} hover role="checkbox" tabIndex={-1}>
                     <TableCell align="left">{row.fname}</TableCell>
                     <TableCell align="left">{row.lname}</TableCell>
-                    <TableCell align="left">{row.age}</TableCell>
+                    <TableCell align="left">{row.emailAdd}</TableCell>
+                    <TableCell align="left">{row.contactNo}</TableCell>
+                    <TableCell align="left">
+                      {" "}
+                      {row.birthday && row.birthday instanceof Timestamp
+                        ? row.birthday.toDate().toLocaleDateString()
+                        : ""}
+                    </TableCell>
+                    <TableCell align="left">
+                      {row.address +
+                        ", " +
+                        row.city +
+                        ", " +
+                        row.country +
+                        ", " +
+                        row.postal}
+                    </TableCell>
+                    <TableCell align="left">
+                      {" "}
+                      {row.createdDate && row.createdDate instanceof Timestamp
+                        ? row.createdDate.toDate().toLocaleDateString()
+                        : ""}
+                    </TableCell>
+
                     <TableCell align="left">
                       <Stack spacing={2} direction="row">
                         <EditIcon
