@@ -158,15 +158,12 @@ export default function StickyHeadTable() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 600,
-            height: "40vh",
+            width: "auto",
+            height: "auto",
             bgcolor: "background.paper",
             borderRadius: 5,
             boxShadow: 24,
             p: 4,
-            "@media (prefers-reduced-motion: no-preference)": {
-              width: 500,
-            },
           }}
         >
           <EditUser closeEvent={handleCloseUser} fid={formid} />
@@ -226,6 +223,9 @@ export default function StickyHeadTable() {
                   First Name
                 </TableCell>
                 <TableCell align="left" style={{ minWidth: "100px" }}>
+                  Middle Name
+                </TableCell>
+                <TableCell align="left" style={{ minWidth: "100px" }}>
                   Last Name
                 </TableCell>
                 <TableCell align="left" style={{ minWidth: "100px" }}>
@@ -253,6 +253,7 @@ export default function StickyHeadTable() {
                 .map(row => (
                   <TableRow key={row.id} hover role="checkbox" tabIndex={-1}>
                     <TableCell align="left">{row.fname}</TableCell>
+                    <TableCell align="left">{row.mname}</TableCell>
                     <TableCell align="left">{row.lname}</TableCell>
                     <TableCell align="left">{row.emailAdd}</TableCell>
                     <TableCell align="left">{row.contactNo}</TableCell>
@@ -266,6 +267,8 @@ export default function StickyHeadTable() {
                       {row.address +
                         ", " +
                         row.city +
+                        ", " +
+                        row.StateP +
                         ", " +
                         row.country +
                         ", " +

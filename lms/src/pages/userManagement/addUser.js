@@ -102,6 +102,7 @@ export default function AddUser({ closeEvent }) {
   const createUser = async () => {
     if (
       fname.trim() === "" ||
+      Mname.trim() === "" ||
       lname.trim() === "" ||
       emailAdd.trim() === "" ||
       contactNo.trim() === "" ||
@@ -127,12 +128,14 @@ export default function AddUser({ closeEvent }) {
 
       await addDoc(empCollectionRef, {
         fname: fname,
+        mname: Mname,
         lname: lname,
         emailAdd: emailAdd,
         contactNo: contactNo,
         birthday: birthdayTimestamp,
         address: address,
         city: city,
+        StateP: StateP,
         postal: postal,
         country: country,
         age: age,
@@ -362,6 +365,7 @@ export default function AddUser({ closeEvent }) {
             Capture Signature
           </Button>
         </Grid> */}
+        <Grid item xs={12}></Grid>
         <Grid item xs={12}>
           <Button
             variant="contained"
