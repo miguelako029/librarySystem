@@ -43,14 +43,16 @@ export default function AddUser({ closeEvent }) {
   //form
 
   const [fname, setFname] = useState("");
+  const [Mname, setMname] = useState("");
   const [lname, setLname] = useState("");
   const [emailAdd, setEmailAdd] = useState("");
   const [contactNo, setContact] = useState("");
   const [birthday, setBirthday] = useState(null);
-  const [address, setAddress] = useState(null);
-  const [city, setCity] = useState(null);
-  const [postal, setPostal] = useState(null);
-  const [country, setCountry] = useState(null);
+  const [address, setAddress] = useState("");
+  const [StateP, setStateP] = useState("");
+  const [city, setCity] = useState("");
+  const [postal, setPostal] = useState("");
+  const [country, setCountry] = useState("");
   const [age, setAge] = useState("");
 
   // const [rows, setRows] = useState([]);
@@ -63,6 +65,9 @@ export default function AddUser({ closeEvent }) {
   const handleFnameChange = event => {
     setFname(event.target.value);
   };
+  const handleMnameChange = event => {
+    setMname(event.target.value);
+  };
   const handleLnameChange = event => {
     setLname(event.target.value);
   };
@@ -74,6 +79,9 @@ export default function AddUser({ closeEvent }) {
   };
   const handleAddressChange = event => {
     setAddress(event.target.value);
+  };
+  const handleStatePChange = event => {
+    setStateP(event.target.value);
   };
   const handleCityChange = event => {
     setCity(event.target.value);
@@ -135,11 +143,13 @@ export default function AddUser({ closeEvent }) {
       getUsers();
       closeEvent();
       setFname("");
+      setMname("");
       setLname("");
       setEmailAdd("");
       setContact("");
       setBirthday(null);
       setAddress("");
+      setStateP("");
       setCountry("");
       setPostal("");
       setCity("");
@@ -192,7 +202,7 @@ export default function AddUser({ closeEvent }) {
       </Typography>
 
       <Grid container spacing={3}>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <TextField
             id="outlined-basic"
             error={error && fname.trim() === ""}
@@ -205,7 +215,20 @@ export default function AddUser({ closeEvent }) {
             sx={{ minWidth: "100%" }}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
+          <TextField
+            id="outlined-basic"
+            error={error && Mname.trim() === ""}
+            label="Middle Name"
+            type="string"
+            value={Mname}
+            onChange={handleMnameChange}
+            variant="outlined"
+            required
+            sx={{ minWidth: "100%" }}
+          />
+        </Grid>
+        <Grid item xs={4}>
           <TextField
             id="outlined-basic"
             label="Last Name"
@@ -260,7 +283,20 @@ export default function AddUser({ closeEvent }) {
             error={error && address.trim() === ""}
             value={address}
             onChange={handleAddressChange}
-            placeholder="20"
+            placeholder="Street No/Street Name/Unit No/Floor/Block/Barangay"
+            required
+            variant="outlined"
+            sx={{ minWidth: "100%" }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            id="outlined-basic"
+            label="State/Province"
+            error={error && StateP.trim() === ""}
+            value={StateP}
+            onChange={handleStatePChange}
+            placeholder="Region"
             required
             variant="outlined"
             sx={{ minWidth: "100%" }}
@@ -274,7 +310,7 @@ export default function AddUser({ closeEvent }) {
             error={error && city.trim() === ""}
             value={city}
             onChange={handleCityChange}
-            placeholder="20"
+            placeholder="City"
             required
             variant="outlined"
             sx={{ minWidth: "100%" }}
@@ -287,21 +323,21 @@ export default function AddUser({ closeEvent }) {
             error={error && postal.trim() === ""}
             value={postal}
             onChange={handlePostalChange}
-            placeholder="20"
+            placeholder="0000"
             required
             type="number"
             variant="outlined"
             sx={{ minWidth: "100%" }}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <TextField
             id="outlined-basic"
             label="Country"
             error={error && country.trim() === ""}
             value={country}
             onChange={handleCountryChange}
-            placeholder="20"
+            placeholder="Country"
             required
             variant="outlined"
             sx={{ minWidth: "100%" }}

@@ -204,7 +204,7 @@ export default function StickyHeadTable() {
           endIcon={<AddCircleIcon />}
           onClick={handleOpen}
         >
-          Add
+          New User
         </Button>
       </Stack>
       <Paper
