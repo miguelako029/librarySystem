@@ -26,16 +26,15 @@ import {
 } from "firebase/firestore";
 
 import { Timestamp } from "firebase/firestore";
-import { getUnixTime } from "date-fns";
+
 import { db } from "../../firebase-config";
 import Swal from "sweetalert2";
 import { useAppStore } from "../../AppStore";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { DateTimePicker } from "@mui/lab";
+
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import SignatureCanvas from "react-signature-canvas";
 
 export default function AddUser({ closeEvent }) {
   //modal

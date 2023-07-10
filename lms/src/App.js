@@ -6,8 +6,8 @@ import Users from "./pages/userManagement/users";
 import Books from "./pages/books";
 import BookManagement from "./pages/bookManagement";
 import Reservation from "./pages/reservation";
-import Catalog from "./pages/catalogs";
-import CatalogSettings from "./pages/catalogSettings";
+import Catalog from "./pages/catalogRep/catalogs";
+import CatalogSettings from "./pages/catalogRep/catalogSettings";
 import BookLoan from "./pages/bookloan";
 import "../src/App.css";
 

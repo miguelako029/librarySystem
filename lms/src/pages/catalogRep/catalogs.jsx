@@ -1,8 +1,8 @@
 import React from "react";
-import SideBar from "../components/sidebar/sidebar";
+import SideBar from "../../components/sidebar/sidebar";
 
 import { Typography, Box } from "@mui/material";
-import TopBar from "../components/topbar/topbar";
+import TopBar from "../../components/topbar/topbar";
 
 export default function books() {
   return (
