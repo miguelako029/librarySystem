@@ -14,6 +14,7 @@ import {
   Divider,
   useStepContext,
 } from "@mui/material";
+import { Timestamp } from "firebase/firestore";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -27,16 +28,18 @@ import { db } from "../../firebase-config";
 import Swal from "sweetalert2";
 import { useAppStore } from "../../AppStore";
 
+import dayjs from "dayjs";
+
 export default function EditUser({ fid, closeEvent }) {
   const [open, setOpen] = useState(false);
   const [fname, setFname] = useState("");
-  const [Mname, setMname] = useState("");
+  const [mname, setMname] = useState("");
   const [lname, setLname] = useState("");
   const [emailAdd, setEmailAdd] = useState("");
   const [contactNo, setContact] = useState("");
   const [birthday, setBirthday] = useState(null);
   const [address, setAddress] = useState("");
-  const [StateP, setStateP] = useState("");
+  const [stateP, setStateP] = useState("");
   const [city, setCity] = useState("");
   const [postal, setPostal] = useState("");
   const [country, setCountry] = useState("");
@@ -46,18 +49,27 @@ export default function EditUser({ fid, closeEvent }) {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    console.log("FID:" + fid.id);
     setFname(fid.fname);
-    console.log("FID:" + fid.fname);
     setLname(fid.lname);
+    setMname(fid.mname);
+    setEmailAdd(fid.emailAdd);
+    setContact(fid.contactNo);
+    setBirthday(fid.birthday);
+    setAddress(fid.address);
+    setStateP(fid.stateP);
+    setCity(fid.city);
+    setPostal(fid.postal);
+    setCountry(fid.country);
   }, [fid]);
 
   const handleFnameChange = event => {
     setFname(event.target.value);
   };
+
   const handleMnameChange = event => {
     setMname(event.target.value);
   };
+
   const handleLnameChange = event => {
     setLname(event.target.value);
   };
@@ -65,7 +77,7 @@ export default function EditUser({ fid, closeEvent }) {
     setEmailAdd(event.target.value);
   };
   const handleBirthdayChange = date => {
-    setBirthday(date);
+    setBirthday(Timestamp.fromDate(date.toDate())); // Convert the selected date to a Firebase Timestamp
   };
   const handleAddressChange = event => {
     setAddress(event.target.value);
@@ -87,7 +99,7 @@ export default function EditUser({ fid, closeEvent }) {
   };
 
   const updateUser = async () => {
-    if (fname.trim() === "" || lname.trim() === "") {
+    if (fname.trim() === "" || lname.trim() === "" || mname.trim() === "") {
       closeEvent();
       Swal.fire("Error", "Please complete all the field", "error").then(() => {
         setError(true);
@@ -97,8 +109,16 @@ export default function EditUser({ fid, closeEvent }) {
       const userDoc = doc(db, "users", fid.id);
       const newfields = {
         fname: fname,
-        Mname: Mname,
+        mname: mname,
         lname: lname,
+        emailAdd: emailAdd,
+        contactNo: contactNo,
+        birthday: birthday,
+        address: address,
+        stateP: stateP,
+        city: city,
+        postal: postal,
+        country: country,
       };
       await updateDoc(userDoc, newfields);
       getUsers();
@@ -146,10 +166,10 @@ export default function EditUser({ fid, closeEvent }) {
         <Grid item xs={4}>
           <TextField
             id="outlined-basic"
-            error={error && Mname.trim() === ""}
+            error={error && mname.trim() === ""}
             label="Middle Name"
             type="string"
-            value={Mname}
+            value={mname}
             onChange={handleMnameChange}
             variant="outlined"
             required
@@ -199,7 +219,7 @@ export default function EditUser({ fid, closeEvent }) {
               variant="outlined"
               required
               sx={{ minWidth: "100%" }}
-              value={birthday}
+              value={birthday ? dayjs(birthday.toDate()) : null}
               onChange={handleBirthdayChange}
             />
           </LocalizationProvider>
@@ -221,8 +241,8 @@ export default function EditUser({ fid, closeEvent }) {
           <TextField
             id="outlined-basic"
             label="State/Province"
-            error={error && StateP.trim() === ""}
-            value={StateP}
+            error={error && stateP.trim() === ""}
+            value={stateP}
             onChange={handleStatePChange}
             placeholder="Region"
             required
