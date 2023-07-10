@@ -103,8 +103,34 @@ export default function StickyHeadTable() {
     }
   };
 
-  const editData = (id, fname, lname, age) => {
-    const data = { id: id, fname: fname, lname: lname, age: age };
+  const editData = (
+    id,
+    fname,
+    lname,
+    mname,
+    emailAdd,
+    contactNo,
+    birthday,
+    address,
+    stateP,
+    city,
+    postal,
+    country
+  ) => {
+    const data = {
+      id: id,
+      fname: fname,
+      lname: lname,
+      mname: mname,
+      emailAdd: emailAdd,
+      contactNo: contactNo,
+      birthday: birthday,
+      address: address,
+      stateP: stateP,
+      city: city,
+      postal: postal,
+      country: country,
+    };
     setFormid(data);
     handleOpenUser();
   };
@@ -278,7 +304,7 @@ export default function StickyHeadTable() {
                       {" "}
                       {row.createdDate && row.createdDate instanceof Timestamp
                         ? row.createdDate.toDate().toLocaleDateString()
-                        : ""}
+                        : null}
                     </TableCell>
 
                     <TableCell align="left">
@@ -291,7 +317,20 @@ export default function StickyHeadTable() {
                           }}
                           className="cursor-pointer"
                           onClick={() =>
-                            editData(row.id, row.fname, row.lname, row.age)
+                            editData(
+                              row.id,
+                              row.fname,
+                              row.lname,
+                              row.mname,
+                              row.emailAdd,
+                              row.contactNo,
+                              row.birthday,
+                              row.address,
+                              row.StateP,
+                              row.city,
+                              row.postal,
+                              row.country
+                            )
                           }
                         />
                         <DeleteIcon
