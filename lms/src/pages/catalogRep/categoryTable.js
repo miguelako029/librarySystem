@@ -9,7 +9,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Checkbox from "@mui/material/Checkbox";
+import { Checkbox, Button } from "@mui/material/";
 import { useAppStore } from "../../AppStore";
 
 export default function Category({ onCheckboxChange }) {
@@ -17,7 +17,8 @@ export default function Category({ onCheckboxChange }) {
   const rows = useAppStore(state => state.rows);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
-  const [isButtonVisible, setButtonVisible] = useState(false);
+  // const [isButtonVisible, setButtonVisible] = useState(false);
+  const [selectedCount, setSelectedCount] = useState(0);
   const empCollectionRef = collection(db, "categories");
 
   // Fetch data from Firestore and update the rows state
@@ -37,7 +38,6 @@ export default function Category({ onCheckboxChange }) {
   const handleCheckboxChange = event => {
     const isChecked = event.target.checked;
     onCheckboxChange(isChecked);
-    setButtonVisible(isChecked);
   };
 
   return (
