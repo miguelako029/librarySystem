@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../firebase-config";
+
 import { collection, getDocs } from "firebase/firestore";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -9,23 +10,28 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
+import { useAppStore } from "../../AppStore";
 
 export default function Category({ onCheckboxChange }) {
-  const [rows, setRows] = useState([]);
+  const setRows = useAppStore(state => state.setRows);
+  const rows = useAppStore(state => state.rows);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
   const [isButtonVisible, setButtonVisible] = useState(false);
+  const empCollectionRef = collection(db, "categories");
 
   // Fetch data from Firestore and update the rows state
-  useEffect(() => {
-    const fetchData = async () => {
-      const querySnapshot = await getDocs(collection(db, "categories"));
-      const data = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setRows(data);
-    };
+  const getCategories = async () => {
+    const querySnapshot = await getDocs(empCollectionRef);
+    const data = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setRows(data);
+  };
 
-    fetchData();
+  useEffect(() => {
+    getCategories();
   }, []);
 
   const handleCheckboxChange = event => {
@@ -48,20 +54,22 @@ export default function Category({ onCheckboxChange }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map(data => (
-              <TableRow
-                key={data.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  <Checkbox onClick={handleCheckboxChange} />
-                </TableCell>
-                <TableCell>{data.category_name}</TableCell>
-                <TableCell align="right">{data.description}</TableCell>
-                <TableCell align="right">{data.created}</TableCell>
-                <TableCell align="right">{data.updated}</TableCell>
-              </TableRow>
-            ))}
+            {rows
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map(row => (
+                <TableRow
+                  key={row.id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    <Checkbox onClick={handleCheckboxChange} />
+                  </TableCell>
+                  <TableCell>{row.category_name}</TableCell>
+                  <TableCell align="right">{row.description}</TableCell>
+                  <TableCell align="right">{row.created}</TableCell>
+                  <TableCell align="right">{row.updated}</TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
