@@ -19,10 +19,10 @@ export default function Category({ onCheckboxChange }) {
   const [page, setPage] = useState(0);
   // const [isButtonVisible, setButtonVisible] = useState(false);
   const [selectedCount, setSelectedCount] = useState(0);
-  const empCollectionRef = collection(db, "categories");
+  const empCollectionRef = collection(db, "catalog");
 
   // Fetch data from Firestore and update the rows state
-  const getCategories = async () => {
+  const getCatalog = async () => {
     const querySnapshot = await getDocs(empCollectionRef);
     const data = querySnapshot.docs.map(doc => ({
       id: doc.id,
@@ -32,7 +32,7 @@ export default function Category({ onCheckboxChange }) {
   };
 
   useEffect(() => {
-    getCategories();
+    getCatalog();
   }, []);
 
   const handleCheckboxChange = event => {
@@ -64,7 +64,7 @@ export default function Category({ onCheckboxChange }) {
                   <TableCell component="th" scope="row">
                     <Checkbox onClick={handleCheckboxChange} />
                   </TableCell>
-                  <TableCell>{row.category_name}</TableCell>
+                  <TableCell>{row.catalog_name}</TableCell>
                   <TableCell align="right">{row.description}</TableCell>
                   <TableCell align="right">{row.created}</TableCell>
                   <TableCell align="right">{row.updated}</TableCell>
