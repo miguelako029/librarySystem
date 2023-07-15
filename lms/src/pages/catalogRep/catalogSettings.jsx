@@ -15,6 +15,9 @@ import {
   addDoc,
   getDocs,
   serverTimestamp,
+  updateDoc,
+  get,
+  doc,
 } from "firebase/firestore";
 
 import Swal from "sweetalert2";
@@ -28,9 +31,21 @@ export default function Books() {
   const [error, setError] = useState(false);
   const empCollectionRef = collection(db, "catalog");
   const [selectedRow, setSelectedRow] = useState(null); // New state to hold selected row
+  const [formid, setFormid] = useState("");
+  // const [catalog_name, setCatName] = useState("");
+  // const [desccription, setDescription] = useState("");
+  useEffect(() => {
+    setCatalogName(selectedRow?.catalog_name || "");
+    setDescriptionCat(selectedRow?.description || "");
+  }, [selectedRow]);
 
   const handleCheckboxChange = isChecked => {
     setSelectedCount(prevCount => (isChecked ? prevCount + 1 : prevCount - 1));
+    if (!isChecked) {
+      setSelectedRow(null);
+      setCatalogName("");
+      setDescriptionCat("");
+    }
   };
 
   const handleCatalogName = event => {
