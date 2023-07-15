@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../firebase-config";
 
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  serverTimestamp,
+  updateDoc,
+  get,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,6 +20,8 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
 import { useAppStore } from "../../AppStore";
+import { Timestamp } from "firebase/firestore";
+import Swal from "sweetalert2";
 
 export default function Category({ onCheckboxChange, setSelectedRow }) {
   const setRows = useAppStore(state => state.setRows);
@@ -74,7 +85,12 @@ export default function Category({ onCheckboxChange, setSelectedRow }) {
                   </TableCell>
                   <TableCell>{row.catalog_name}</TableCell>
                   <TableCell align="right">{row.description}</TableCell>
-                  <TableCell align="right">{row.created}</TableCell>
+                  <TableCell align="right">
+                    {" "}
+                    {row.createdDate && row.createdDate instanceof Timestamp
+                      ? row.createdDate.toDate().toLocaleDateString()
+                      : null}
+                  </TableCell>
                   <TableCell align="right">{row.updated}</TableCell>
                 </TableRow>
               ))}

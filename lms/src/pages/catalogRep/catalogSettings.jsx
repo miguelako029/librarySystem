@@ -18,6 +18,7 @@ import {
   updateDoc,
   get,
   doc,
+  deleteDoc,
 } from "firebase/firestore";
 
 import Swal from "sweetalert2";
@@ -113,6 +114,34 @@ export default function Books() {
     };
   };
 
+  const deleteCatalog = id => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(result => {
+      if (result.value) {
+        deleteApi(id);
+      }
+    });
+  };
+
+  const deleteApi = async id => {
+    const catalogDoc = doc(db, "catalog", id);
+    await deleteDoc(catalogDoc);
+    Swal.fire("Deleted!", "Your file has been deleted.", "success");
+
+    getCatalog();
+    setCatalogName("");
+    setDescriptionCat("");
+    setSelectedCount(0); // Reset the selectedCount to 0
+    setSelectedRow(null);
+  };
+
   return (
     <>
       <TopBar />
@@ -162,6 +191,19 @@ export default function Books() {
                 }}
               >
                 Save
+              </Button>
+            )}
+            {isCheckboxChecked && (
+              <Button
+                variant="outlined"
+                color="error"
+                sx={{
+                  marginTop: "20px",
+                  marginLeft: "5px",
+                }}
+                onClick={() => deleteCatalog(selectedRow.id)}
+              >
+                Delete
               </Button>
             )}
             {isCheckboxChecked && (
