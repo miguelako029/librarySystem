@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SideBar from "../../components/sidebar/sidebar";
 import { Typography, Box } from "@mui/material";
 import TopBar from "../../components/topbar/topbar";
@@ -6,7 +6,8 @@ import TextField from "@mui/material/TextField";
 import { Checkbox, Button, Grid } from "@mui/material";
 import CatTable from "../catalogRep/categoryTable";
 import { db } from "../../firebase-config";
-import { getCatalog } from "../catalogRep/categoryTable";
+import { useAppStore } from "../../AppStore";
+// import { getCatalog } from "../catalogRep/categoryTable";
 
 import "firebase/firestore";
 import {
@@ -19,11 +20,14 @@ import {
 import Swal from "sweetalert2";
 
 export default function Books() {
+  const setRows = useAppStore(state => state.setRows);
+  const rows = useAppStore(state => state.rows);
   const [selectedCount, setSelectedCount] = useState(0);
   const [catalog_name, setCatalogName] = useState("");
   const [description, setDescriptionCat] = useState("");
   const [error, setError] = useState(false);
   const empCollectionRef = collection(db, "catalog");
+  const [selectedRow, setSelectedRow] = useState(null); // New state to hold selected row
 
   const handleCheckboxChange = isChecked => {
     setSelectedCount(prevCount => (isChecked ? prevCount + 1 : prevCount - 1));
@@ -32,12 +36,30 @@ export default function Books() {
   const handleCatalogName = event => {
     setCatalogName(event.target.value);
   };
+
   const handleCatDescription = event => {
     setDescriptionCat(event.target.value);
   };
 
+  const editData = (id, catalog_name, description) => {
+    setSelectedRow({ id, catalog_name, description });
+  };
+
   const isCheckboxChecked = selectedCount === 1;
   const hideButtons = selectedCount < 1;
+
+  const getCatalog = async () => {
+    const querySnapshot = await getDocs(empCollectionRef);
+    const data = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setRows(data);
+  };
+
+  useEffect(() => {
+    getCatalog();
+  }, []);
 
   const addCatalog = async () => {
     if (catalog_name.trim() === "" || description.trim() === "") {
@@ -140,7 +162,11 @@ export default function Books() {
               </Button>
             )}
           </Grid>
-          <CatTable onCheckboxChange={handleCheckboxChange} />
+          <CatTable
+            onCheckboxChange={handleCheckboxChange}
+            selectedRow={selectedRow}
+            setSelectedRow={setSelectedRow} // Pass setSelectedRow as a prop
+          />
         </Box>
       </Box>
     </>

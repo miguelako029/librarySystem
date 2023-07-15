@@ -9,7 +9,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Checkbox, Button } from "@mui/material/";
+import Checkbox from "@mui/material/Checkbox";
 import { useAppStore } from "../../AppStore";
 
 export default function Category({ onCheckboxChange }) {
@@ -17,9 +17,9 @@ export default function Category({ onCheckboxChange }) {
   const rows = useAppStore(state => state.rows);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
-  // const [isButtonVisible, setButtonVisible] = useState(false);
   const [selectedCount, setSelectedCount] = useState(0);
   const empCollectionRef = collection(db, "catalog");
+  const [formid, setFormid] = useState("");
 
   // Fetch data from Firestore and update the rows state
   const getCatalog = async () => {
@@ -38,6 +38,16 @@ export default function Category({ onCheckboxChange }) {
   const handleCheckboxChange = event => {
     const isChecked = event.target.checked;
     onCheckboxChange(isChecked);
+  };
+
+  const editData = (id, catalog_name, description) => {
+    const data = {
+      id: id,
+      catalog_name: catalog_name,
+      description: description,
+    };
+    setFormid(data);
+    // handleOpenUser();
   };
 
   return (
@@ -62,7 +72,12 @@ export default function Category({ onCheckboxChange }) {
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    <Checkbox onClick={handleCheckboxChange} />
+                    <Checkbox
+                      onChange={handleCheckboxChange}
+                      onClick={() =>
+                        editData(row.id, row.catalog_name, row.description)
+                      }
+                    />
                   </TableCell>
                   <TableCell>{row.catalog_name}</TableCell>
                   <TableCell align="right">{row.description}</TableCell>
