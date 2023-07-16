@@ -23,7 +23,7 @@ import { useAppStore } from "../../AppStore";
 import { Timestamp } from "firebase/firestore";
 import Swal from "sweetalert2";
 
-export default function Category({ onCheckboxChange, setSelectedRow }) {
+export default function Category({ onCheckboxChange, setSelectedRow, fid }) {
   const setRows = useAppStore(state => state.setRows);
   const rows = useAppStore(state => state.rows);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -91,7 +91,11 @@ export default function Category({ onCheckboxChange, setSelectedRow }) {
                       ? row.createdDate.toDate().toLocaleDateString()
                       : null}
                   </TableCell>
-                  <TableCell align="right">{row.updated}</TableCell>
+                  <TableCell align="right">
+                    {row.updatedDate && row.updatedDate instanceof Timestamp
+                      ? row.updatedDate.toDate().toLocaleDateString()
+                      : null}
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>
