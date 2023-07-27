@@ -1,8 +1,8 @@
 import React from "react";
-import SideBar from "../components/sidebar/sidebar";
+import SideBar from "../../components/sidebar/sidebar";
 
 import { Typography, Box } from "@mui/material";
-import TopBar from "../components/topbar/topbar";
+import TopBar from "../../components/topbar/topbar";
 
 export default function books() {
   return (
@@ -14,7 +14,7 @@ export default function books() {
 
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           {" "}
-          <h1>Book Loan</h1>
+          <h1>Borrowing</h1>
         </Box>
       </Box>
     </>

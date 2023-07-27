@@ -24,8 +24,8 @@ import {
 import Swal from "sweetalert2";
 
 export default function Books() {
-  const setRows = useAppStore(state => state.setRows);
-  const rows = useAppStore(state => state.rows);
+  const setRows = useAppStore((state) => state.setRows);
+  const rows = useAppStore((state) => state.rows);
   const [selectedCount, setSelectedCount] = useState(0);
   const [catalog_name, setCatalogName] = useState("");
   const [description, setDescriptionCat] = useState("");
@@ -48,8 +48,10 @@ export default function Books() {
     }
   }, [selectedCount]);
 
-  const handleCheckboxChange = isChecked => {
-    setSelectedCount(prevCount => (isChecked ? prevCount + 1 : prevCount - 1));
+  const handleCheckboxChange = (isChecked) => {
+    setSelectedCount((prevCount) =>
+      isChecked ? prevCount + 1 : prevCount - 1
+    );
     if (!isChecked) {
       setSelectedRow(null);
     }
@@ -66,11 +68,11 @@ export default function Books() {
     }
   };
 
-  const handleCatalogName = event => {
+  const handleCatalogName = (event) => {
     setCatalogName(event.target.value);
   };
 
-  const handleCatDescription = event => {
+  const handleCatDescription = (event) => {
     setDescriptionCat(event.target.value);
   };
 
@@ -83,7 +85,7 @@ export default function Books() {
 
   const getCatalog = async () => {
     const querySnapshot = await getDocs(empCollectionRef);
-    const data = querySnapshot.docs.map(doc => ({
+    const data = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
@@ -132,7 +134,8 @@ export default function Books() {
     };
   };
 
-  const deleteCatalog = id => {
+  const deleteCatalog = (id) => {
+    // console.log(selectedRow.id);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -141,14 +144,14 @@ export default function Books() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then(result => {
+    }).then((result) => {
       if (result.value) {
-        deleteApi(id);
+        deleteApi(selectedRow.id);
       }
     });
   };
 
-  const deleteApi = async id => {
+  const deleteApi = async (id) => {
     const catalogDoc = doc(db, "catalog", id);
     await deleteDoc(catalogDoc);
     Swal.fire("Deleted!", "Your file has been deleted.", "success");
@@ -192,14 +195,6 @@ export default function Books() {
         Swal.fire("Error", "Failed to update the catalog.", "error");
       }
     }
-  };
-
-  const CancelSelectCatalog = () => {
-    getCatalog();
-    setCatalogName("");
-    setDescriptionCat("");
-    setSelectedCount(0); // Reset the selectedCount to 0
-    setSelectedRow(null);
   };
 
   return (
@@ -267,19 +262,6 @@ export default function Books() {
                 onClick={() => deleteCatalog(selectedRow.id)}
               >
                 Delete
-              </Button>
-            )}
-            {isCheckboxChecked && (
-              <Button
-                variant="outlined"
-                color="error"
-                sx={{
-                  marginTop: "20px",
-                  marginLeft: "5px",
-                }}
-                onClick={CancelSelectCatalog}
-              >
-                Cancel
               </Button>
             )}
           </Grid>

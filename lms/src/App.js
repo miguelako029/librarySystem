@@ -3,12 +3,12 @@ import SideBar from "./components/sidebar/sidebar";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Dashboard from "./pages/dashboard";
 import Users from "./pages/userManagement/users";
-import Books from "./pages/books";
-import BookManagement from "./pages/bookManagement";
+import Books from "./pages/books/books";
+import BookManagement from "./pages/books/bookManagement";
 import Reservation from "./pages/reservation";
 import Catalog from "./pages/catalogRep/catalogs";
 import CatalogSettings from "./pages/catalogRep/catalogSettings";
-import BookLoan from "./pages/bookloan";
+import BookLoan from "./pages/books/bookloan";
 import "../src/App.css";
 
 export default function App() {

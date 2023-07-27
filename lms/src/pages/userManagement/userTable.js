@@ -33,8 +33,8 @@ export default function StickyHeadTable() {
   const [formid, setFormid] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const empCollectionRef = collection(db, "users");
-  const setRows = useAppStore(state => state.setRows);
-  const rows = useAppStore(state => state.rows);
+  const setRows = useAppStore((state) => state.setRows);
+  const rows = useAppStore((state) => state.rows);
 
   const handleOpen = () => {
     setOpen(true);
@@ -58,7 +58,10 @@ export default function StickyHeadTable() {
 
   const getUsers = async () => {
     const querySnapshot = await getDocs(empCollectionRef);
-    const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+    const data = querySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
     setRows(data);
   };
 
@@ -66,12 +69,12 @@ export default function StickyHeadTable() {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = event => {
+  const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
-  const deleteUser = id => {
+  const deleteUser = (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -80,21 +83,21 @@ export default function StickyHeadTable() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then(result => {
+    }).then((result) => {
       if (result.value) {
         deleteApi(id);
       }
     });
   };
 
-  const deleteApi = async id => {
+  const deleteApi = async (id) => {
     const userDoc = doc(db, "users", id);
     await deleteDoc(userDoc);
     Swal.fire("Deleted!", "Your file has been deleted.", "success");
     getUsers();
   };
 
-  const filterData = v => {
+  const filterData = (v) => {
     if (v) {
       setRows([v]);
     } else {
@@ -212,8 +215,8 @@ export default function StickyHeadTable() {
           options={rows}
           sx={{ width: 300 }}
           onChange={(e, v) => filterData(v)}
-          getOptionLabel={row => row.fname || ""}
-          renderInput={params => (
+          getOptionLabel={(row) => row.fname || ""}
+          renderInput={(params) => (
             <TextField {...params} size="small" label="Search" />
           )}
         />
@@ -224,7 +227,7 @@ export default function StickyHeadTable() {
         ></Typography>
         <Button
           variant="contained"
-          endIcon={<AddCircleIcon />}
+          startIcon={<AddCircleIcon />}
           onClick={handleOpen}
         >
           New User
@@ -276,7 +279,7 @@ export default function StickyHeadTable() {
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(row => (
+                .map((row) => (
                   <TableRow key={row.id} hover role="checkbox" tabIndex={-1}>
                     <TableCell align="left">{row.fname}</TableCell>
                     <TableCell align="left">{row.mname}</TableCell>
