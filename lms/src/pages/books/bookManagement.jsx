@@ -25,6 +25,7 @@ import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { useAppStore } from "../../AppStore";
 import { Timestamp } from "firebase/firestore";
 import { db } from "../../firebase-config";
+import Swal from "sweetalert2";
 
 export default function Books() {
   const [open, setOpen] = useState(false);
@@ -62,6 +63,29 @@ export default function Books() {
     setRows(data);
   };
 
+  const deleteBook = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.value) {
+        deleteApi(id);
+      }
+    });
+  };
+
+  const deleteApi = async (id) => {
+    const bookDoc = doc(db, "books", id);
+    await deleteDoc(bookDoc);
+    Swal.fire("Deleted!", "Your file has been deleted.", "success");
+    getBooks();
+  };
+
   return (
     <>
       <Modal
@@ -74,6 +98,17 @@ export default function Books() {
           <AddBooks closeEvent={handleClose} />
         </Box>
       </Modal>
+
+      {/* <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <AddBooks closeEvent={handleClose} />
+        </Box>
+      </Modal> */}
 
       <TopBar />
       <Box height={30} />
@@ -162,6 +197,7 @@ export default function Books() {
                             color: "darkred",
                             cursor: "pointer",
                           }}
+                          onClick={() => deleteBook(row.id)}
                         />
                       </TableCell>
                     </TableRow>
