@@ -16,44 +16,51 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import Modal from "@mui/material/Modal";
+import AddBooks from "../books/addBook";
 
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
+// import TextField from "@mui/material/TextField";
+// import Autocomplete from "@mui/material/Autocomplete";
 
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
-
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { useAppStore } from "../../AppStore";
+import { Timestamp } from "firebase/firestore";
+import { db } from "../../firebase-config";
 
 export default function Books() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [page, setPage] = useState(0);
+
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const empCollectionRef = collection(db, "books");
+  const setRows = useAppStore((state) => state.setRows);
+  const rows = useAppStore((state) => state.rows);
+
+  const modalStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+
+  useEffect(() => {
+    getBooks();
+  }, []);
+
+  const getBooks = async () => {
+    const querySnapshot = await getDocs(empCollectionRef);
+    const data = querySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    setRows(data);
+  };
 
   return (
     <>
@@ -64,12 +71,7 @@ export default function Books() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalStyle}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
+          <AddBooks closeEvent={handleClose} />
         </Box>
       </Modal>
 
@@ -81,7 +83,7 @@ export default function Books() {
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           {" "}
           <h1>Books</h1>
-          <Autocomplete
+          {/* <Autocomplete
             disablePortal
             id="combo-box-demo"
             options={rows}
@@ -89,9 +91,9 @@ export default function Books() {
             getOptionLabel={(row) => row.name || ""}
             sx={{ width: 300 }}
             renderInput={(params) => <TextField {...params} label="Movie" />}
-          />
+          /> */}
           <Button
-            sx={{ marginBottom: 3, float: "right" }}
+            sx={{ marginBottom: 3, float: "left" }}
             primary
             variant="contained"
             startIcon={<Plus />}
@@ -104,58 +106,66 @@ export default function Books() {
               <TableHead>
                 <TableRow>
                   <TableCell>Book ID</TableCell>
-                  <TableCell align="right">Title</TableCell>
-                  <TableCell align="right">Author(s):</TableCell>
-                  <TableCell align="right">Publication Year</TableCell>
-                  <TableCell align="right">Genre/Category</TableCell>
-                  <TableCell align="right">Description/Summary</TableCell>
-                  <TableCell align="right">Language</TableCell>
-                  <TableCell align="right">Publisher</TableCell>
-                  <TableCell align="right">Total Copies</TableCell>
-                  <TableCell align="right">Available Copies</TableCell>
-                  <TableCell align="right">Location</TableCell>
+                  <TableCell align="left">Title</TableCell>
+                  <TableCell align="left">Author(s):</TableCell>
+                  <TableCell align="left">Publication Year</TableCell>
+                  <TableCell align="left">Genre/Category</TableCell>
+                  <TableCell align="left">Description/Summary</TableCell>
+                  <TableCell align="left">Language</TableCell>
+                  <TableCell align="left">Publisher</TableCell>
+                  <TableCell align="left">Total Copies</TableCell>
+                  <TableCell align="left">Available Copies</TableCell>
+                  <TableCell align="left">Location</TableCell>
                   <TableCell align="center">Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
-                  <TableRow
-                    key={row.name}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="center">
-                      <EditIcon
-                        style={{
-                          fontSize: "20px",
-                          color: "blue",
-                          cursor: "pointer",
-                          marginRight: 8,
-                        }}
-                        className="cursor-pointer"
-                      />
-                      <DeleteIcon
-                        style={{
-                          fontSize: "20px",
-                          color: "darkred",
-                          cursor: "pointer",
-                        }}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => (
+                    <TableRow
+                      key={row.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.bookID}
+                      </TableCell>
+                      <TableCell align="left">{row.bookTitle}</TableCell>
+                      <TableCell align="left">{row.bookAuthor}</TableCell>
+                      <TableCell align="left">
+                        {row.bookPublicationYear instanceof Timestamp
+                          ? row.bookPublicationYear
+                              .toDate()
+                              .toLocaleDateString()
+                          : ""}
+                      </TableCell>
+                      <TableCell align="left">{row.bookGenre}</TableCell>
+                      <TableCell align="left">{row.bookDesc}</TableCell>
+                      <TableCell align="left">{row.bookLanguage}</TableCell>
+                      <TableCell align="left">{row.bookPublisher}</TableCell>
+                      <TableCell align="left">{row.bookTotal}</TableCell>
+                      <TableCell align="left">{row.bookAvailCopies}</TableCell>
+                      <TableCell align="left">{row.bookLoc}</TableCell>
+                      <TableCell align="center">
+                        <EditIcon
+                          style={{
+                            fontSize: "20px",
+                            color: "blue",
+                            cursor: "pointer",
+                            marginleft: 8,
+                          }}
+                          className="cursor-pointer"
+                        />
+                        <DeleteIcon
+                          style={{
+                            fontSize: "20px",
+                            color: "darkred",
+                            cursor: "pointer",
+                          }}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
