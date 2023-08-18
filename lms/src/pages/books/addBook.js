@@ -200,15 +200,15 @@ export default function AddBooks({ closeEvent }) {
         >
           <CloseIcon />
         </IconButton>{" "}
-        Add New User
+        Add Book
       </Typography>
 
       <Grid container spacing={3}>
-        <Grid item xs={4}>
+        <Grid item xs={12}>
           <TextField
             id="outlined-basic"
             error={error && fname.trim() === ""}
-            label="First Name"
+            label="Book Title"
             type="string"
             value={fname}
             onChange={handleFnameChange}
@@ -217,7 +217,7 @@ export default function AddBooks({ closeEvent }) {
             sx={{ minWidth: "100%" }}
           />
         </Grid>
-        <Grid item xs={4}>
+        {/* <Grid item xs={4}>
           <TextField
             id="outlined-basic"
             error={error && Mname.trim() === ""}
@@ -241,7 +241,7 @@ export default function AddBooks({ closeEvent }) {
             required
             sx={{ minWidth: "100%" }}
           />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <TextField
             id="outlined-basic"
