@@ -43,7 +43,7 @@ export default function Books() {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 500,
+    width: 700,
     bgcolor: "background.paper",
     borderRadius: "15px",
     boxShadow: 24,

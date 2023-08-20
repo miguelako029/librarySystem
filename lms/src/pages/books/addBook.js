@@ -24,6 +24,7 @@ import {
   getDocs,
   serverTimestamp,
 } from "firebase/firestore";
+import axios from "axios";
 
 import { Timestamp } from "firebase/firestore";
 
@@ -33,6 +34,8 @@ import { useAppStore } from "../../AppStore";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { InputLabel, MenuItem, Select } from "@mui/material";
+import languagesData from "../books/languages.json";
 
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 
@@ -54,7 +57,12 @@ export default function AddBooks({ closeEvent }) {
   const [country, setCountry] = useState("");
   const [age, setAge] = useState("");
 
+  const [catalog, setCatalogs] = useState([]); // State to store catalog data
+  const [selectedCatalog, setSelectedCatalog] = useState("");
+  const [selectedLang, setSelectedLang] = useState(""); // State to store selected catalog
+  const [options, setOptions] = useState([]); // Define a state variable and its setter
   // const [rows, setRows] = useState([]);
+  const [data, setData] = useState([]); // State to hold the fetched data
 
   //handling
   const setRows = useAppStore((state) => state.setRows);
@@ -96,6 +104,16 @@ export default function AddBooks({ closeEvent }) {
   };
   const handleAgeChange = (event) => {
     setAge(event.target.value);
+  };
+
+  const handleCatalogChange = (event) => {
+    setSelectedCatalog(event.target.value);
+    console.log(event.target.value);
+  };
+
+  const handleLanguageChange = (event) => {
+    setSelectedLang(event.target.value);
+    console.log(event.target.value);
   };
 
   const createUser = async () => {
@@ -179,12 +197,31 @@ export default function AddBooks({ closeEvent }) {
     color: theme.palette.text.secondary,
   }));
 
-  const sigCanvasRef = useRef(null);
+  const langArray = Object.keys(languagesData).map((isoCode) => ({
+    code: isoCode,
+    name: languagesData[isoCode].name,
+    nativeName: languagesData[isoCode].nativeName,
+  }));
 
-  const captureSignature = () => {
-    const base64Image = sigCanvasRef.current.toDataURL();
-    // Use the base64Image as needed (e.g., save to database or display preview)
-  };
+  useEffect(() => {
+    // Function to fetch catalog data from Firestore
+    const fetchCatalogs = async () => {
+      const catalogCollection = collection(db, "catalog"); // Replace "catalogs" with your collection name
+      const querySnapshot = await getDocs(catalogCollection);
+      const catalogData = [];
+
+      querySnapshot.forEach((doc) => {
+        // Assuming your catalog documents have a field called "name"
+        const catalogName = doc.data().catalog_name;
+        catalogData.push({ id: doc.id, name: catalogName });
+      });
+
+      setCatalogs(catalogData);
+      console.log("Fetched Catalog Data:", catalogData);
+    };
+
+    fetchCatalogs();
+  }, []); // Run this effect once on component mount
 
   return (
     <>
@@ -217,35 +254,11 @@ export default function AddBooks({ closeEvent }) {
             sx={{ minWidth: "100%" }}
           />
         </Grid>
-        {/* <Grid item xs={4}>
-          <TextField
-            id="outlined-basic"
-            error={error && Mname.trim() === ""}
-            label="Middle Name"
-            type="string"
-            value={Mname}
-            onChange={handleMnameChange}
-            variant="outlined"
-            required
-            sx={{ minWidth: "100%" }}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            id="outlined-basic"
-            label="Last Name"
-            error={error && lname.trim() === ""}
-            value={lname}
-            onChange={handleLnameChange}
-            variant="outlined"
-            required
-            sx={{ minWidth: "100%" }}
-          />
-        </Grid> */}
+
         <Grid item xs={12}>
           <TextField
             id="outlined-basic"
-            label="Email Address"
+            label="Book Author"
             error={error && emailAdd.trim() === ""}
             value={emailAdd}
             onChange={handleEmailAddChange}
@@ -254,92 +267,125 @@ export default function AddBooks({ closeEvent }) {
             sx={{ minWidth: "100%" }}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <TextField
             id="outlined-basic"
-            label="Contact No."
-            error={error && contactNo.trim() === ""}
-            value={contactNo}
-            onChange={handleContactChange}
-            variant="outlined"
+            label="Publisher"
+            error={error && city.trim() === ""}
+            value={city}
+            onChange={handleCityChange}
             required
+            variant="outlined"
             sx={{ minWidth: "100%" }}
           />
-        </Grid>
-        <Grid item xs={6}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              // error={error && birthday.trim() === ""}
-              variant="outlined"
-              required
-              sx={{ minWidth: "100%" }}
-              value={birthday}
-              onChange={handleBirthdayChange}
-            />
-          </LocalizationProvider>
         </Grid>
         <Grid item xs={12}>
           <TextField
             id="outlined-basic"
-            label="Address"
+            label="Description/Summary"
             error={error && address.trim() === ""}
             value={address}
             onChange={handleAddressChange}
-            placeholder="Street No/Street Name/Unit No/Floor/Block/Barangay"
-            required
-            variant="outlined"
-            sx={{ minWidth: "100%" }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            id="outlined-basic"
-            label="State/Province"
-            error={error && StateP.trim() === ""}
-            value={StateP}
-            onChange={handleStatePChange}
-            placeholder="Region"
             required
             variant="outlined"
             sx={{ minWidth: "100%" }}
           />
         </Grid>
 
-        <Grid item xs={6}>
-          <TextField
+        <Grid item xs={4}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">
+              Selected Catalog
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              label="Selected Catalog"
+              value={selectedCatalog}
+              onChange={handleCatalogChange}
+              // onChange={handleChange}
+            >
+              {catalog.map((catalog) => (
+                <MenuItem key={catalog.id} value={catalog.name}>
+                  {catalog.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={4}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              // error={error && birthday.trim() === ""}
+              variant="outlined"
+              required
+              label="Publication Year"
+              sx={{ minWidth: "100%" }}
+              value={birthday}
+              onChange={handleBirthdayChange}
+            />
+          </LocalizationProvider>
+        </Grid>
+
+        <Grid item xs={4}>
+          {/* <TextField
             id="outlined-basic"
-            label="City"
-            error={error && city.trim() === ""}
-            value={city}
-            onChange={handleCityChange}
-            placeholder="City"
+            label="Language"
+            error={error && StateP.trim() === ""}
+            value={StateP}
+            onChange={handleStatePChange}
             required
             variant="outlined"
             sx={{ minWidth: "100%" }}
-          />
+          /> */}
+          <FormControl fullWidth>
+            <InputLabel>Select a Language</InputLabel>
+            <Select
+              value={selectedLang}
+              onChange={handleLanguageChange}
+              label="Select a Language"
+            >
+              {langArray.map((lang) => (
+                <MenuItem key={lang.code} value={lang.code}>
+                  {lang.name} - {lang.nativeName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
-        <Grid item xs={6}>
+
+        <Grid item xs={4}>
           <TextField
             id="outlined-basic"
-            label="Postal code"
+            label="Total Copies"
             error={error && postal.trim() === ""}
             value={postal}
             onChange={handlePostalChange}
-            placeholder="0000"
             required
             type="number"
             variant="outlined"
             sx={{ minWidth: "100%" }}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <TextField
             id="outlined-basic"
-            label="Country"
+            label="Available Copies"
             error={error && country.trim() === ""}
             value={country}
             onChange={handleCountryChange}
-            placeholder="Country"
+            required
+            variant="outlined"
+            sx={{ minWidth: "100%" }}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            id="outlined-basic"
+            label="Location"
+            error={error && country.trim() === ""}
+            value={country}
+            onChange={handleCountryChange}
             required
             variant="outlined"
             sx={{ minWidth: "100%" }}
