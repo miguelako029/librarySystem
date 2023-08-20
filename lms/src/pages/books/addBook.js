@@ -35,7 +35,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { InputLabel, MenuItem, Select } from "@mui/material";
-import languagesData from "../books/languages.json";
+import languagesData from "../../assets/json/languages.json";
 
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 
