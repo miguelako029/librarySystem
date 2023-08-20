@@ -44,18 +44,17 @@ export default function AddBooks({ closeEvent }) {
   const [open, setOpen] = useState(false);
   //form
 
-  const [fname, setFname] = useState("");
-  const [Mname, setMname] = useState("");
-  const [lname, setLname] = useState("");
-  const [emailAdd, setEmailAdd] = useState("");
-  const [contactNo, setContact] = useState("");
-  const [birthday, setBirthday] = useState(null);
-  const [address, setAddress] = useState("");
-  const [StateP, setStateP] = useState("");
-  const [city, setCity] = useState("");
-  const [postal, setPostal] = useState("");
-  const [country, setCountry] = useState("");
-  const [age, setAge] = useState("");
+  const [bookTitle, setbookTitle] = useState("");
+  const [bookAuthor, setbookAuthor] = useState("");
+
+  const [bookPublicationYear, setbookPublicationYear] = useState(null);
+  const [bookDesc, setbookDesc] = useState("");
+  const [bookGenre, setbookGenre] = useState("");
+
+  const [bookPublisher, setbookPublisher] = useState("");
+  const [bookTotal, setbookTotal] = useState("");
+  const [bookAvailCopies, setbookAvailCopies] = useState("");
+  const [bookLoc, setbookLoc] = useState("");
 
   const [catalog, setCatalogs] = useState([]); // State to store catalog data
   const [selectedCatalog, setSelectedCatalog] = useState("");
@@ -66,44 +65,36 @@ export default function AddBooks({ closeEvent }) {
 
   //handling
   const setRows = useAppStore((state) => state.setRows);
-  const empCollectionRef = collection(db, "users");
+  const empCollectionRef = collection(db, "books");
   const [error, setError] = useState(false);
 
-  const handleFnameChange = (event) => {
-    setFname(event.target.value);
+  const handlebookTitleChange = (event) => {
+    setbookTitle(event.target.value);
   };
-  const handleMnameChange = (event) => {
-    setMname(event.target.value);
+
+  const handlebookAuthorChange = (event) => {
+    setbookAuthor(event.target.value);
   };
-  const handleLnameChange = (event) => {
-    setLname(event.target.value);
+  const handlebookPublicationYearChange = (date) => {
+    setbookPublicationYear(date);
   };
-  const handleEmailAddChange = (event) => {
-    setEmailAdd(event.target.value);
+
+  const handlebookDescChange = (event) => {
+    setbookDesc(event.target.value);
   };
-  const handleBirthdayChange = (date) => {
-    setBirthday(date);
+
+  const handlebookPublisherChange = (event) => {
+    setbookPublisher(event.target.value);
   };
-  const handleAddressChange = (event) => {
-    setAddress(event.target.value);
+  const handlebookTotalChange = (event) => {
+    setbookTotal(event.target.value);
   };
-  const handleStatePChange = (event) => {
-    setStateP(event.target.value);
+  const handlebookAvailCopiesChange = (event) => {
+    setbookAvailCopies(event.target.value);
   };
-  const handleCityChange = (event) => {
-    setCity(event.target.value);
-  };
-  const handlePostalChange = (event) => {
-    setPostal(event.target.value);
-  };
-  const handleCountryChange = (event) => {
-    setCountry(event.target.value);
-  };
-  const handleContactChange = (event) => {
-    setContact(event.target.value);
-  };
-  const handleAgeChange = (event) => {
-    setAge(event.target.value);
+
+  const handleLocChange = (event) => {
+    setbookLoc(event.target.value);
   };
 
   const handleCatalogChange = (event) => {
@@ -116,18 +107,14 @@ export default function AddBooks({ closeEvent }) {
     console.log(event.target.value);
   };
 
-  const createUser = async () => {
+  const submitBook = async () => {
     if (
-      fname.trim() === "" ||
-      Mname.trim() === "" ||
-      lname.trim() === "" ||
-      emailAdd.trim() === "" ||
-      contactNo.trim() === "" ||
-      address.trim() === "" ||
-      // (birthday && birthday.trim && birthday.trim() === "") ||
-      city.trim() === "" ||
-      postal.trim() === "" ||
-      country.trim() === ""
+      bookTitle.trim() === "" ||
+      bookAuthor.trim() === "" ||
+      // (bookPublicationYear && bookPublicationYear.trim && bookPublicationYear.trim() === "") ||
+      bookPublisher.trim() === "" ||
+      bookTotal.trim() === "" ||
+      bookAvailCopies.trim() === ""
     ) {
       closeEvent();
       Swal.fire("Error", "Please complete all the field", "error").then(() => {
@@ -135,56 +122,49 @@ export default function AddBooks({ closeEvent }) {
       });
       // Prevent adding user if any field is empty
     } else {
-      const birthdayDate = new Date(birthday);
-      if (isNaN(birthdayDate.getTime())) {
+      const bookPublicationYearDate = new Date(bookPublicationYear);
+      if (isNaN(bookPublicationYearDate.getTime())) {
         // Handle invalid date input
         console.error("Invalid date format");
         return;
       }
-      const birthdayTimestamp = Timestamp.fromMillis(birthdayDate.getTime());
+      const bookPublicationYearTimestamp = Timestamp.fromMillis(
+        bookPublicationYearDate.getTime()
+      );
 
       await addDoc(empCollectionRef, {
-        fname: fname,
-        mname: Mname,
-        lname: lname,
-        emailAdd: emailAdd,
-        contactNo: contactNo,
-        birthday: birthdayTimestamp,
-        address: address,
-        city: city,
-        StateP: StateP,
-        postal: postal,
-        country: country,
-        age: age,
+        bookTitle: bookTitle,
+        bookAuthor: bookAuthor,
+        bookPublicationYear: bookPublicationYearTimestamp,
+        bookGenre: selectedCatalog,
+        bookDesc: bookDesc,
+        bookPublisher: bookPublisher,
+        bookTotal: bookTotal,
+        bookAvailCopies: bookAvailCopies,
+        bookLoc: bookLoc,
+        bookLanguage: selectedLang,
         createdDate: serverTimestamp(),
       });
 
-      console.log(birthday);
-      getUsers();
+      console.log(bookPublicationYear);
+      getBookList();
       closeEvent();
-      setFname("");
-      setMname("");
-      setLname("");
-      setEmailAdd("");
-      setContact("");
-      setBirthday(null);
-      setAddress("");
-      setStateP("");
-      setCountry("");
-      setPostal("");
-      setCity("");
+      setbookTitle("");
+
+      setbookAuthor("");
+
+      setbookPublicationYear(null);
+      setbookGenre("");
+
+      setbookAvailCopies("");
+      setbookTotal("");
+      setbookPublisher("");
 
       Swal.fire("Submitted!", "Your file has been submitted.", "success");
     }
-
-    const user = {
-      fname,
-      lname,
-      age,
-    };
   };
 
-  const getUsers = async () => {
+  const getBookList = async () => {
     const data = await getDocs(empCollectionRef);
     setRows(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
@@ -244,11 +224,11 @@ export default function AddBooks({ closeEvent }) {
         <Grid item xs={12}>
           <TextField
             id="outlined-basic"
-            error={error && fname.trim() === ""}
+            error={error && bookTitle.trim() === ""}
             label="Book Title"
             type="string"
-            value={fname}
-            onChange={handleFnameChange}
+            value={bookTitle}
+            onChange={handlebookTitleChange}
             variant="outlined"
             required
             sx={{ minWidth: "100%" }}
@@ -259,9 +239,9 @@ export default function AddBooks({ closeEvent }) {
           <TextField
             id="outlined-basic"
             label="Book Author"
-            error={error && emailAdd.trim() === ""}
-            value={emailAdd}
-            onChange={handleEmailAddChange}
+            error={error && bookAuthor.trim() === ""}
+            value={bookAuthor}
+            onChange={handlebookAuthorChange}
             variant="outlined"
             required
             sx={{ minWidth: "100%" }}
@@ -271,9 +251,9 @@ export default function AddBooks({ closeEvent }) {
           <TextField
             id="outlined-basic"
             label="Publisher"
-            error={error && city.trim() === ""}
-            value={city}
-            onChange={handleCityChange}
+            error={error && bookPublisher.trim() === ""}
+            value={bookPublisher}
+            onChange={handlebookPublisherChange}
             required
             variant="outlined"
             sx={{ minWidth: "100%" }}
@@ -283,9 +263,9 @@ export default function AddBooks({ closeEvent }) {
           <TextField
             id="outlined-basic"
             label="Description/Summary"
-            error={error && address.trim() === ""}
-            value={address}
-            onChange={handleAddressChange}
+            error={error && bookDesc.trim() === ""}
+            value={bookDesc}
+            onChange={handlebookDescChange}
             required
             variant="outlined"
             sx={{ minWidth: "100%" }}
@@ -316,28 +296,18 @@ export default function AddBooks({ closeEvent }) {
         <Grid item xs={4}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-              // error={error && birthday.trim() === ""}
+              // error={error && bookPublicationYear.trim() === ""}
               variant="outlined"
               required
               label="Publication Year"
               sx={{ minWidth: "100%" }}
-              value={birthday}
-              onChange={handleBirthdayChange}
+              value={bookPublicationYear}
+              onChange={handlebookPublicationYearChange}
             />
           </LocalizationProvider>
         </Grid>
 
         <Grid item xs={4}>
-          {/* <TextField
-            id="outlined-basic"
-            label="Language"
-            error={error && StateP.trim() === ""}
-            value={StateP}
-            onChange={handleStatePChange}
-            required
-            variant="outlined"
-            sx={{ minWidth: "100%" }}
-          /> */}
           <FormControl fullWidth>
             <InputLabel>Select a Language</InputLabel>
             <Select
@@ -346,7 +316,7 @@ export default function AddBooks({ closeEvent }) {
               label="Select a Language"
             >
               {langArray.map((lang) => (
-                <MenuItem key={lang.code} value={lang.code}>
+                <MenuItem key={lang.code} value={lang.nativeName}>
                   {lang.name} - {lang.nativeName}
                 </MenuItem>
               ))}
@@ -358,9 +328,9 @@ export default function AddBooks({ closeEvent }) {
           <TextField
             id="outlined-basic"
             label="Total Copies"
-            error={error && postal.trim() === ""}
-            value={postal}
-            onChange={handlePostalChange}
+            error={error && bookTotal.trim() === ""}
+            value={bookTotal}
+            onChange={handlebookTotalChange}
             required
             type="number"
             variant="outlined"
@@ -371,9 +341,9 @@ export default function AddBooks({ closeEvent }) {
           <TextField
             id="outlined-basic"
             label="Available Copies"
-            error={error && country.trim() === ""}
-            value={country}
-            onChange={handleCountryChange}
+            error={error && bookAvailCopies.trim() === ""}
+            value={bookAvailCopies}
+            onChange={handlebookAvailCopiesChange}
             required
             variant="outlined"
             sx={{ minWidth: "100%" }}
@@ -383,9 +353,9 @@ export default function AddBooks({ closeEvent }) {
           <TextField
             id="outlined-basic"
             label="Location"
-            error={error && country.trim() === ""}
-            value={country}
-            onChange={handleCountryChange}
+            error={error && bookAvailCopies.trim() === ""}
+            value={bookLoc}
+            onChange={handleLocChange}
             required
             variant="outlined"
             sx={{ minWidth: "100%" }}
@@ -414,9 +384,9 @@ export default function AddBooks({ closeEvent }) {
         <Grid item xs={12}>
           <Button
             variant="contained"
-            onClick={createUser}
+            onClick={submitBook}
             // disabled={
-            //   fname.trim() === "" || lname.trim() === "" || age.trim() === ""
+            //   bookTitle.trim() === "" || lname.trim() === "" || age.trim() === ""
             // }
             sx={{ minWidth: "100%" }}
           >
