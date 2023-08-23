@@ -1,7 +1,7 @@
 import React from "react";
 import SideBar from "./components/sidebar/sidebar";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import Dashboard from "./pages/dashboard";
+import Dashboard from "./pages/dashboard/dashboard";
 import Users from "./pages/userManagement/users";
 import Books from "./pages/books/books";
 import BookManagement from "./pages/books/bookTable";
