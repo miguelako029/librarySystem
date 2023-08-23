@@ -16,7 +16,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import Modal from "@mui/material/Modal";
-import AddBooks from "../books/addBook";
+import AddBooks from "./addBook";
+import EditBook from "./editBooks";
 
 // import TextField from "@mui/material/TextField";
 // import Autocomplete from "@mui/material/Autocomplete";
@@ -28,15 +29,28 @@ import { db } from "../../firebase-config";
 import Swal from "sweetalert2";
 
 export default function Books() {
-  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [open, setOpen] = useState(false);
+
+  // const [open2, setOpen2] = useState(false);
+
   const [page, setPage] = useState(0);
+  const [formid, setFormid] = useState("");
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const empCollectionRef = collection(db, "books");
   const setRows = useAppStore((state) => state.setRows);
   const rows = useAppStore((state) => state.rows);
+  const [openEditForm, setOpenEditForm] = useState(false);
+
+  const handleOpenUser = () => {
+    setOpenEditForm(true);
+  };
+
+  const handleCloseUser = () => {
+    setOpenEditForm(false);
+  };
 
   const modalStyle = {
     position: "absolute",
@@ -64,6 +78,7 @@ export default function Books() {
   };
 
   const deleteBook = (id) => {
+    console.log(id);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -86,6 +101,39 @@ export default function Books() {
     getBooks();
   };
 
+  const editData = (
+    id,
+    bookTitle,
+    bookAuthor,
+    bookPublisher,
+    bookDesc,
+    bookGenre,
+    bookPublicationYear,
+    bookLanguage,
+    bookLoc,
+    bookTotal,
+    bookAvailCopies
+  ) => {
+    const data = {
+      id: id,
+      bookTitle: bookTitle,
+      bookAuthor: bookAuthor,
+      bookPublisher: bookPublisher,
+      bookDesc: bookDesc,
+      bookGenre: bookGenre,
+      bookPublicationYear: bookPublicationYear,
+
+      bookLanguage: bookLanguage,
+      bookLoc: bookLoc,
+      bookTotal: bookTotal,
+      bookAvailCopies: bookAvailCopies,
+    };
+    setFormid(data);
+    handleOpenUser();
+
+    console.log(id);
+  };
+
   return (
     <>
       <Modal
@@ -99,16 +147,16 @@ export default function Books() {
         </Box>
       </Modal>
 
-      {/* <Modal
-        open={open}
+      <Modal
+        open={openEditForm}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalStyle}>
-          <AddBooks closeEvent={handleClose} />
+          <EditBook closeEvent={handleCloseUser} fid={formid} />
         </Box>
-      </Modal> */}
+      </Modal>
 
       <TopBar />
       <Box height={30} />
@@ -140,7 +188,6 @@ export default function Books() {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Book ID</TableCell>
                   <TableCell align="left">Title</TableCell>
                   <TableCell align="left">Author(s):</TableCell>
                   <TableCell align="left">Publication Year</TableCell>
@@ -151,6 +198,8 @@ export default function Books() {
                   <TableCell align="left">Total Copies</TableCell>
                   <TableCell align="left">Available Copies</TableCell>
                   <TableCell align="left">Location</TableCell>
+                  <TableCell align="left">Created Date</TableCell>
+                  <TableCell align="left">Updated Date</TableCell>
                   <TableCell align="center">Action</TableCell>
                 </TableRow>
               </TableHead>
@@ -162,9 +211,6 @@ export default function Books() {
                       key={row.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
-                      <TableCell component="th" scope="row">
-                        {row.bookID}
-                      </TableCell>
                       <TableCell align="left">{row.bookTitle}</TableCell>
                       <TableCell align="left">{row.bookAuthor}</TableCell>
                       <TableCell align="left">
@@ -181,6 +227,18 @@ export default function Books() {
                       <TableCell align="left">{row.bookTotal}</TableCell>
                       <TableCell align="left">{row.bookAvailCopies}</TableCell>
                       <TableCell align="left">{row.bookLoc}</TableCell>
+                      <TableCell align="left">
+                        {" "}
+                        {row.createdDate && row.createdDate instanceof Timestamp
+                          ? row.createdDate.toDate().toLocaleDateString()
+                          : null}
+                      </TableCell>
+                      <TableCell align="right">
+                        {row.updatedDate && row.updatedDate instanceof Timestamp
+                          ? row.updatedDate.toDate().toLocaleDateString()
+                          : null}
+                      </TableCell>
+
                       <TableCell align="center">
                         <EditIcon
                           style={{
@@ -190,6 +248,21 @@ export default function Books() {
                             marginleft: 8,
                           }}
                           className="cursor-pointer"
+                          onClick={() =>
+                            editData(
+                              row.id,
+                              row.bookTitle,
+                              row.bookAuthor,
+                              row.bookPublisher,
+                              row.bookDesc,
+                              row.bookGenre,
+                              row.bookPublicationYear,
+                              row.bookLanguage,
+                              row.bookLoc,
+                              row.bookTotal,
+                              row.bookAvailCopies
+                            )
+                          }
                         />
                         <DeleteIcon
                           style={{

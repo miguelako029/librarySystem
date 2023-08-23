@@ -4,7 +4,7 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Dashboard from "./pages/dashboard";
 import Users from "./pages/userManagement/users";
 import Books from "./pages/books/books";
-import BookManagement from "./pages/books/bookManagement";
+import BookManagement from "./pages/books/bookTable";
 import Reservation from "./pages/reservation";
 import Catalog from "./pages/catalogRep/catalogs";
 import CatalogSettings from "./pages/catalogRep/catalogSettings";

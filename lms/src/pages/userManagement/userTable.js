@@ -136,6 +136,7 @@ export default function StickyHeadTable() {
     };
     setFormid(data);
     handleOpenUser();
+    console.log(id);
   };
 
   // const row = {

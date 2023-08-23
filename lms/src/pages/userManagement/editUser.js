@@ -23,7 +23,14 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
-import { collection, getDocs, updateDoc, get, doc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  updateDoc,
+  get,
+  doc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "../../firebase-config";
 import Swal from "sweetalert2";
 import { useAppStore } from "../../AppStore";
@@ -44,7 +51,7 @@ export default function EditUser({ fid, closeEvent }) {
   const [postal, setPostal] = useState("");
   const [country, setCountry] = useState("");
   // const [rows, setRows] = useState([]);
-  const setRows = useAppStore(state => state.setRows);
+  const setRows = useAppStore((state) => state.setRows);
   const empCollectionRef = collection(db, "users");
   const [error, setError] = useState(false);
 
@@ -62,39 +69,39 @@ export default function EditUser({ fid, closeEvent }) {
     setCountry(fid.country);
   }, [fid]);
 
-  const handleFnameChange = event => {
+  const handleFnameChange = (event) => {
     setFname(event.target.value);
   };
 
-  const handleMnameChange = event => {
+  const handleMnameChange = (event) => {
     setMname(event.target.value);
   };
 
-  const handleLnameChange = event => {
+  const handleLnameChange = (event) => {
     setLname(event.target.value);
   };
-  const handleEmailAddChange = event => {
+  const handleEmailAddChange = (event) => {
     setEmailAdd(event.target.value);
   };
-  const handleBirthdayChange = date => {
+  const handleBirthdayChange = (date) => {
     setBirthday(Timestamp.fromDate(date.toDate())); // Convert the selected date to a Firebase Timestamp
   };
-  const handleAddressChange = event => {
+  const handleAddressChange = (event) => {
     setAddress(event.target.value);
   };
-  const handleStatePChange = event => {
+  const handleStatePChange = (event) => {
     setStateP(event.target.value);
   };
-  const handleCityChange = event => {
+  const handleCityChange = (event) => {
     setCity(event.target.value);
   };
-  const handlePostalChange = event => {
+  const handlePostalChange = (event) => {
     setPostal(event.target.value);
   };
-  const handleCountryChange = event => {
+  const handleCountryChange = (event) => {
     setCountry(event.target.value);
   };
-  const handleContactChange = event => {
+  const handleContactChange = (event) => {
     setContact(event.target.value);
   };
 
@@ -119,6 +126,7 @@ export default function EditUser({ fid, closeEvent }) {
         city: city,
         postal: postal,
         country: country,
+        updatedDate: serverTimestamp(),
       };
       await updateDoc(userDoc, newfields);
       getUsers();
@@ -129,7 +137,7 @@ export default function EditUser({ fid, closeEvent }) {
 
   const getUsers = async () => {
     const data = await getDocs(empCollectionRef);
-    setRows(data.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+    setRows(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
   return (

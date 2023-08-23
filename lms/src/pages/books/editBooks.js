@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Modal,
@@ -14,36 +14,33 @@ import {
   Divider,
   useStepContext,
 } from "@mui/material";
+// import { Timestamp } from "firebase/firestore";
+
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   collection,
-  addDoc,
   getDocs,
+  updateDoc,
+  get,
+  doc,
   serverTimestamp,
+  Timestamp,
 } from "firebase/firestore";
-import axios from "axios";
-
-import { Timestamp } from "firebase/firestore";
-
 import { db } from "../../firebase-config";
 import Swal from "sweetalert2";
 import { useAppStore } from "../../AppStore";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { InputLabel, MenuItem, Select } from "@mui/material";
 import languagesData from "../../assets/json/languages.json";
+import { InputLabel, MenuItem, Select } from "@mui/material";
+import dayjs from "dayjs";
 
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-
-export default function AddBooks({ closeEvent }) {
-  //modal
+export default function EditBook({ fid, closeEvent }) {
   const [open, setOpen] = useState(false);
-  //form
-
   const [bookTitle, setbookTitle] = useState("");
   const [bookAuthor, setbookAuthor] = useState("");
 
@@ -56,17 +53,28 @@ export default function AddBooks({ closeEvent }) {
   const [bookAvailCopies, setbookAvailCopies] = useState("");
   const [bookLoc, setbookLoc] = useState("");
 
-  const [catalog, setCatalogs] = useState([]); // State to store catalog data
   const [selectedCatalog, setSelectedCatalog] = useState("");
   const [selectedLang, setSelectedLang] = useState(""); // State to store selected catalog
-  const [options, setOptions] = useState([]); // Define a state variable and its setter
-  // const [rows, setRows] = useState([]);
-  const [data, setData] = useState([]); // State to hold the fetched data
+  const [catalog, setCatalogs] = useState([]); // State to store catalog data
 
-  //handling
+  const [options, setOptions] = useState([]);
+  // const [rows, setRows] = useState([]);
   const setRows = useAppStore((state) => state.setRows);
   const empCollectionRef = collection(db, "books");
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    setbookTitle(fid.bookTitle);
+    setbookAuthor(fid.bookAuthor);
+    setbookPublicationYear(fid.bookPublicationYear);
+    setbookDesc(fid.bookDesc);
+    setSelectedCatalog(fid.bookGenre);
+    setSelectedLang(fid.bookLanguage);
+    setbookLoc(fid.bookLoc);
+    setbookPublisher(fid.bookPublisher);
+    setbookTotal(fid.bookTotal);
+    setbookAvailCopies(fid.bookAvailCopies);
+  }, [fid]);
 
   const handlebookTitleChange = (event) => {
     setbookTitle(event.target.value);
@@ -76,7 +84,7 @@ export default function AddBooks({ closeEvent }) {
     setbookAuthor(event.target.value);
   };
   const handlebookPublicationYearChange = (date) => {
-    setbookPublicationYear(date);
+    setbookPublicationYear(Timestamp.fromDate(date.toDate()));
   };
 
   const handlebookDescChange = (event) => {
@@ -107,77 +115,6 @@ export default function AddBooks({ closeEvent }) {
     console.log(event.target.value);
   };
 
-  const submitBook = async () => {
-    if (
-      bookTitle.trim() === "" ||
-      bookAuthor.trim() === "" ||
-      // (bookPublicationYear && bookPublicationYear.trim && bookPublicationYear.trim() === "") ||
-      bookPublisher.trim() === "" ||
-      bookTotal.trim() === "" ||
-      bookAvailCopies.trim() === ""
-    ) {
-      closeEvent();
-      Swal.fire("Error", "Please complete all the field", "error").then(() => {
-        setError(true);
-      });
-      // Prevent adding user if any field is empty
-    } else {
-      const bookPublicationYearDate = new Date(bookPublicationYear);
-      if (isNaN(bookPublicationYearDate.getTime())) {
-        // Handle invalid date input
-        console.error("Invalid date format");
-        return;
-      }
-      const bookPublicationYearTimestamp = Timestamp.fromMillis(
-        bookPublicationYearDate.getTime()
-      );
-
-      await addDoc(empCollectionRef, {
-        bookTitle: bookTitle,
-        bookAuthor: bookAuthor,
-        bookPublicationYear: bookPublicationYearTimestamp,
-        bookGenre: selectedCatalog,
-        bookDesc: bookDesc,
-        bookPublisher: bookPublisher,
-        bookTotal: bookTotal,
-        bookAvailCopies: bookAvailCopies,
-        bookLoc: bookLoc,
-        bookLanguage: selectedLang,
-        createdDate: serverTimestamp(),
-        updatedDate: serverTimestamp(),
-      });
-
-      console.log(bookPublicationYear);
-      getBookList();
-      closeEvent();
-      setbookTitle("");
-
-      setbookAuthor("");
-
-      setbookPublicationYear(null);
-      setbookGenre("");
-
-      setbookAvailCopies("");
-      setbookTotal("");
-      setbookPublisher("");
-
-      Swal.fire("Submitted!", "Your file has been submitted.", "success");
-    }
-  };
-
-  const getBookList = async () => {
-    const data = await getDocs(empCollectionRef);
-    setRows(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  };
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
-
   const langArray = Object.keys(languagesData).map((isoCode) => ({
     code: isoCode,
     name: languagesData[isoCode].name,
@@ -202,7 +139,41 @@ export default function AddBooks({ closeEvent }) {
     };
 
     fetchCatalogs();
-  }, []); // Run this effect once on component mount
+  }, []);
+
+  const saveBookUpdate = async () => {
+    if (bookTitle.trim() === "" || bookAuthor.trim() === "") {
+      closeEvent();
+      Swal.fire("Error", "Please complete all the field", "error").then(() => {
+        setError(true);
+      });
+      // Prevent adding books if any field is empty
+    } else {
+      const bookDoc = doc(db, "books", fid.id);
+      const newfields = {
+        bookTitle: bookTitle,
+        bookAuthor: bookAuthor,
+        bookPublisher: bookPublisher,
+        bookDesc: bookDesc,
+        bookPublicationYear: bookPublicationYear,
+        bookGenre: selectedCatalog,
+        bookLanguage: selectedLang,
+        bookLoc: bookLoc,
+        bookTotal: bookTotal,
+        bookAvailCopies: bookAvailCopies,
+        updatedDate: serverTimestamp(),
+      };
+      await updateDoc(bookDoc, newfields);
+      getBooks();
+      closeEvent();
+      Swal.fire("Updated!", "Your details has been updated.", "success");
+    }
+  };
+
+  const getBooks = async () => {
+    const data = await getDocs(empCollectionRef);
+    setRows(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
 
   return (
     <>
@@ -218,7 +189,7 @@ export default function AddBooks({ closeEvent }) {
         >
           <CloseIcon />
         </IconButton>{" "}
-        Add Book
+        Edit Book Details
       </Typography>
 
       <Grid container spacing={3}>
@@ -260,6 +231,7 @@ export default function AddBooks({ closeEvent }) {
             sx={{ minWidth: "100%" }}
           />
         </Grid>
+
         <Grid item xs={12}>
           <TextField
             id="outlined-basic"
@@ -284,7 +256,6 @@ export default function AddBooks({ closeEvent }) {
               label="Selected Catalog"
               value={selectedCatalog}
               onChange={handleCatalogChange}
-              // onChange={handleChange}
             >
               {catalog.map((catalog) => (
                 <MenuItem key={catalog.id} value={catalog.name}>
@@ -302,7 +273,11 @@ export default function AddBooks({ closeEvent }) {
               required
               label="Publication Year"
               sx={{ minWidth: "100%" }}
-              value={bookPublicationYear}
+              value={
+                bookPublicationYear instanceof Timestamp
+                  ? dayjs(bookPublicationYear.toDate())
+                  : null
+              }
               onChange={handlebookPublicationYearChange}
             />
           </LocalizationProvider>
@@ -385,7 +360,7 @@ export default function AddBooks({ closeEvent }) {
         <Grid item xs={12}>
           <Button
             variant="contained"
-            onClick={submitBook}
+            onClick={saveBookUpdate}
             // disabled={
             //   bookTitle.trim() === "" || lname.trim() === "" || age.trim() === ""
             // }
