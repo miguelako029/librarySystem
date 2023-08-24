@@ -287,7 +287,7 @@ export default function AddBooks({ closeEvent }) {
               // onChange={handleChange}
             >
               {catalog.map((catalog) => (
-                <MenuItem key={catalog.id} value={catalog.name}>
+                <MenuItem key={catalog.id} value={catalog.id}>
                   {catalog.name}
                 </MenuItem>
               ))}

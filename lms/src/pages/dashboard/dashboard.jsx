@@ -1,50 +1,75 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import SideBar from "../../components/sidebar/sidebar";
 import TopBar from "../../components/topbar/topbar";
-import { styled } from "@mui/material/styles";
-import { Typography, Box, Container, Paper } from "@mui/material";
-
-// Import Outlet for nested routes and Link for navigation
-import { Outlet } from "react-router-dom";
-
-// Import useRoutes to handle routing
-import { useRoutes } from "react-router-dom";
-import { Routes, Route } from "react-router-dom";
-
-import Catalog from "../dashboard/catalog";
-import BookList from "../dashboard/bookList";
-
-// Define the styling for Paper
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
+import {
+  Typography,
+  Box,
+  Container,
+  Paper,
+  Button,
+  ListItemText,
+  List,
+  ListItem,
+} from "@mui/material";
+import { Link, useParams } from "react-router-dom";
+import { collection, getDocs, where, query } from "firebase/firestore";
+import { db } from "../../firebase-config";
 
 export default function Home() {
-  const routes = [
-    {
-      // The base route for the catalog
-      path: "/",
-      // Render the Catalog component for this route
-      element: <Catalog />,
-      // Nested routes for the BookList component
-      children: [
-        {
-          // Dynamic route parameter for book ID
-          path: "catalog/:id",
-          // Render the BookList component for this route
-          element: <BookList />,
-        },
-        // Add more nested routes if needed
-      ],
-    },
-  ];
+  const { catalogId } = useParams();
+  const [catalogs, setCatalogs] = useState([]);
+  const [books, setBooks] = useState([]);
+  const [selectedCatalogId, setSelectedCatalogId] = useState(null); // Initialize with null
 
-  // Use the useRoutes hook to handle routing
-  const routeResult = useRoutes(routes);
+  useEffect(() => {
+    // Fetch catalogs
+    const fetchCatalogs = async () => {
+      const catalogsCollection = collection(db, "catalog");
+      const catalogsSnapshot = await getDocs(catalogsCollection);
+      const catalogList = catalogsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setCatalogs(catalogList);
+    };
+
+    fetchCatalogs();
+    fetchBooks();
+  }, [catalogId]);
+
+  const fetchBooks = async (bookGenre) => {
+    if (bookGenre && bookGenre !== "all") {
+      const booksCollection = collection(db, "books");
+      const booksQuery = query(
+        booksCollection,
+        where("catalogId", "==", bookGenre) // Filter books by catalogId
+      );
+      const booksSnapshot = await getDocs(booksQuery);
+      const booksList = booksSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setBooks(booksList);
+      setSelectedCatalogId(bookGenre); // Set the selected catalog ID
+      displaySelectedCatalogId(bookGenre); // Call the function to display in console
+    } else {
+      // Fetch all books
+      const allBooksCollection = collection(db, "books");
+      const allBooksSnapshot = await getDocs(allBooksCollection);
+      const allBooksList = allBooksSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setBooks(allBooksList);
+      setSelectedCatalogId("all"); // Set selected catalog as "all"
+      displaySelectedCatalogId("all"); // Call the function to display in console
+    }
+  };
+
+  const displaySelectedCatalogId = (catalogId) => {
+    console.log(`Selected Catalog ID: ${catalogId}`);
+  };
+
   return (
     <>
       <TopBar />
@@ -61,16 +86,60 @@ export default function Home() {
               Library System Dashboard
             </Typography>
             <Paper elevation={3}>
-              {/* Wrap routes with Routes and handle errors */}
-              <Routes>
-                {routes.map((route) => (
-                  <Route
-                    key={route.path}
-                    path={route.path}
-                    element={route.element}
-                  />
+              <div>
+                <Button
+                  variant="contained"
+                  key="all"
+                  // component={Link}
+                  // to={`/dashboard/all`} // Link to show all books
+                  style={{
+                    marginRight: "10px",
+                    marginBottom: "10px",
+                    backgroundColor:
+                      selectedCatalogId === "all" ? "primary" : "success", // Highlight if "All" is selected
+                  }}
+                  value="all"
+                  onClick={() => setSelectedCatalogId("all")} // Set selected catalog as "all"
+                >
+                  <ListItemText primary="All" />
+                </Button>
+                {catalogs.map((catalog) => (
+                  <Button
+                    variant="contained"
+                    key={catalog.id}
+                    style={{
+                      marginRight: "10px",
+                      marginBottom: "10px",
+                      backgroundColor:
+                        selectedCatalogId === catalog.id
+                          ? "success"
+                          : "primary",
+                    }}
+                    value={catalog.id}
+                    onClick={() => {
+                      setSelectedCatalogId(catalog.id);
+                      fetchBooks(catalog.id); // Call fetchBooks with the catalog.id
+                    }}
+                  >
+                    <ListItemText primary={catalog.catalog_name} />
+                  </Button>
                 ))}
-              </Routes>
+              </div>
+              <div>
+                <h2>Books</h2>
+                <List>
+                  {selectedCatalogId ? (
+                    // Display books based on the selected catalog
+                    books.map((book) => (
+                      <ListItem key={book.id}>
+                        <ListItemText primary={book.bookTitle} />
+                      </ListItem>
+                    ))
+                  ) : (
+                    <p>Select a catalog to view books.</p>
+                  )}
+                </List>
+              </div>
             </Paper>
           </Container>
         </Box>
