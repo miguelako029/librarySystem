@@ -19,9 +19,6 @@ import Modal from "@mui/material/Modal";
 import AddBooks from "./addBook";
 import EditBook from "./editBooks";
 
-// import TextField from "@mui/material/TextField";
-// import Autocomplete from "@mui/material/Autocomplete";
-
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { useAppStore } from "../../AppStore";
 import { Timestamp } from "firebase/firestore";
@@ -33,16 +30,12 @@ export default function Books() {
   const handleClose = () => setOpen(false);
   const [open, setOpen] = useState(false);
 
-  // const [open2, setOpen2] = useState(false);
-
   const [page, setPage] = useState(0);
   const [formid, setFormid] = useState("");
-
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const empCollectionRef = collection(db, "books");
   const setRows = useAppStore((state) => state.setRows);
-  const rows = useAppStore((state) => state.rows);
   const [openEditForm, setOpenEditForm] = useState(false);
+  const [combinedData, setCombinedData] = useState([]);
 
   const handleOpenUser = () => {
     setOpenEditForm(true);
@@ -64,21 +57,45 @@ export default function Books() {
     p: 4,
   };
 
-  useEffect(() => {
-    getBooks();
-  }, []);
+  const fetchBooksData = async () => {
+    const booksCollectionRef = collection(db, "books");
+    const booksQuerySnapshot = await getDocs(booksCollectionRef);
+    return booksQuerySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  };
+
+  const fetchCatalogsData = async () => {
+    const catalogsCollectionRef = collection(db, "catalog");
+    const catalogsQuerySnapshot = await getDocs(catalogsCollectionRef);
+    return catalogsQuerySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  };
+
+  const combineData = async () => {
+    const booksData = await fetchBooksData();
+    const catalogsData = await fetchCatalogsData();
+
+    const combinedData = booksData.map((book) => {
+      const catalog = catalogsData.find((c) => c.id === book.bookGenre);
+      return {
+        ...book,
+        catalogName: catalog ? catalog.catalog_name : "Unknown",
+      };
+    });
+
+    return combinedData;
+  };
 
   const getBooks = async () => {
-    const querySnapshot = await getDocs(empCollectionRef);
-    const data = querySnapshot.docs.map((doc) => ({
-      ...doc.data(),
-      id: doc.id,
-    }));
-    setRows(data);
+    const data = await combineData();
+    setCombinedData(data);
   };
 
   const deleteBook = (id) => {
-    console.log(id);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -122,7 +139,6 @@ export default function Books() {
       bookDesc: bookDesc,
       bookGenre: bookGenre,
       bookPublicationYear: bookPublicationYear,
-
       bookLanguage: bookLanguage,
       bookLoc: bookLoc,
       bookTotal: bookTotal,
@@ -130,9 +146,11 @@ export default function Books() {
     };
     setFormid(data);
     handleOpenUser();
-
-    console.log(id);
   };
+
+  useEffect(() => {
+    getBooks();
+  }, []);
 
   return (
     <>
@@ -154,7 +172,11 @@ export default function Books() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalStyle}>
-          <EditBook closeEvent={handleCloseUser} fid={formid} />
+          <EditBook
+            closeEvent={handleCloseUser}
+            fid={formid}
+            refreshTable={getBooks}
+          />
         </Box>
       </Modal>
 
@@ -164,17 +186,7 @@ export default function Books() {
         <SideBar />
 
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          {" "}
           <h1>Books</h1>
-          {/* <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={rows}
-            // onChange={(e, v) => filterData(v)}
-            getOptionLabel={(row) => row.name || ""}
-            sx={{ width: 300 }}
-            renderInput={(params) => <TextField {...params} label="Movie" />}
-          /> */}
           <Button
             sx={{ marginBottom: 3, float: "left" }}
             primary
@@ -189,7 +201,7 @@ export default function Books() {
               <TableHead>
                 <TableRow>
                   <TableCell align="left">Title</TableCell>
-                  <TableCell align="left">Author(s):</TableCell>
+                  <TableCell align="left">Author(s)</TableCell>
                   <TableCell align="left">Publication Year</TableCell>
                   <TableCell align="left">Genre/Category</TableCell>
                   <TableCell align="left">Description/Summary</TableCell>
@@ -204,7 +216,7 @@ export default function Books() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
+                {combinedData
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <TableRow
@@ -220,7 +232,7 @@ export default function Books() {
                               .toLocaleDateString()
                           : ""}
                       </TableCell>
-                      <TableCell align="left">{row.bookGenre}</TableCell>
+                      <TableCell align="left">{row.catalogName}</TableCell>
                       <TableCell align="left">{row.bookDesc}</TableCell>
                       <TableCell align="left">{row.bookLanguage}</TableCell>
                       <TableCell align="left">{row.bookPublisher}</TableCell>
@@ -228,7 +240,6 @@ export default function Books() {
                       <TableCell align="left">{row.bookAvailCopies}</TableCell>
                       <TableCell align="left">{row.bookLoc}</TableCell>
                       <TableCell align="left">
-                        {" "}
                         {row.createdDate && row.createdDate instanceof Timestamp
                           ? row.createdDate.toDate().toLocaleDateString()
                           : null}
@@ -238,7 +249,6 @@ export default function Books() {
                           ? row.updatedDate.toDate().toLocaleDateString()
                           : null}
                       </TableCell>
-
                       <TableCell align="center">
                         <EditIcon
                           style={{

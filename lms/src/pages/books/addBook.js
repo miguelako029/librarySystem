@@ -107,6 +107,12 @@ export default function AddBooks({ closeEvent }) {
     console.log(event.target.value);
   };
 
+  const getBookList = async () => {
+    const data = await getDocs(empCollectionRef);
+    setRows(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    console.log("Table refreshed!"); // Add this line
+  };
+
   const submitBook = async () => {
     if (
       bookTitle.trim() === "" ||
@@ -148,7 +154,7 @@ export default function AddBooks({ closeEvent }) {
       });
 
       console.log(bookPublicationYear);
-      getBookList();
+
       closeEvent();
       setbookTitle("");
 
@@ -161,13 +167,14 @@ export default function AddBooks({ closeEvent }) {
       setbookTotal("");
       setbookPublisher("");
 
-      Swal.fire("Submitted!", "Your file has been submitted.", "success");
+      Swal.fire("Submitted!", "Your file has been submitted.", "success").then(
+        () => {
+          // Refresh the table after success
+          getBookList();
+          window.location.reload();
+        }
+      );
     }
-  };
-
-  const getBookList = async () => {
-    const data = await getDocs(empCollectionRef);
-    setRows(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
   const Item = styled(Paper)(({ theme }) => ({

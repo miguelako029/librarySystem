@@ -1,0 +1,41 @@
+.book-card {
+  width: 200px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  position: relative;
+  transition: transform 0.2s;
+}
+
+/* Style for the "Add to Cart" button */
+.card-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #007bff;
+  color: #fff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.2s;
+}
+
+/* Hover effect to show the button */
+.book-card:hover {
+  transform: scale(1.05);
+}
+
+.book-card:hover .card-button {
+  opacity: 1;
+}
+
+/* Additional styles for product details */
+.book-title {
+  font-weight: bold;
+}
+
+.book-author {
+  color: #555;
+}

@@ -39,7 +39,7 @@ import languagesData from "../../assets/json/languages.json";
 import { InputLabel, MenuItem, Select } from "@mui/material";
 import dayjs from "dayjs";
 
-export default function EditBook({ fid, closeEvent }) {
+export default function EditBook({ fid, closeEvent, refreshTable }) {
   const [open, setOpen] = useState(false);
   const [bookTitle, setbookTitle] = useState("");
   const [bookAuthor, setbookAuthor] = useState("");
@@ -141,6 +141,11 @@ export default function EditBook({ fid, closeEvent }) {
     fetchCatalogs();
   }, []);
 
+  const getBooks = async () => {
+    const data = await getDocs(empCollectionRef);
+    setRows(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
   const saveBookUpdate = async () => {
     if (bookTitle.trim() === "" || bookAuthor.trim() === "") {
       closeEvent();
@@ -164,15 +169,16 @@ export default function EditBook({ fid, closeEvent }) {
         updatedDate: serverTimestamp(),
       };
       await updateDoc(bookDoc, newfields);
-      getBooks();
+      // getBooks();
       closeEvent();
-      Swal.fire("Updated!", "Your details has been updated.", "success");
+      Swal.fire("Submitted!", "Your file has been submitted.", "success").then(
+        () => {
+          // Refresh the table after success
+          getBooks();
+          window.location.reload();
+        }
+      );
     }
-  };
-
-  const getBooks = async () => {
-    const data = await getDocs(empCollectionRef);
-    setRows(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
   return (
@@ -258,7 +264,7 @@ export default function EditBook({ fid, closeEvent }) {
               onChange={handleCatalogChange}
             >
               {catalog.map((catalog) => (
-                <MenuItem key={catalog.id} value={catalog.name}>
+                <MenuItem key={catalog.id} value={catalog.id}>
                   {catalog.name}
                 </MenuItem>
               ))}
