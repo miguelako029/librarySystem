@@ -34,10 +34,8 @@
 
 /* Additional styles for product details */
 .book-title-div {
-  font-weight: 200;
-  font-size: 30pt;
   margin-bottom: 20px;
-  color: #007bff;
+  color: #252525;
 }
 
 .book-Genre-div {

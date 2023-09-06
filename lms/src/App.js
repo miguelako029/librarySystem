@@ -9,6 +9,7 @@ import Reservation from "./pages/reservation";
 import Catalog from "./pages/catalogRep/catalogs";
 import CatalogSettings from "./pages/catalogRep/catalogSettings";
 import BookLoan from "./pages/books/bookloan";
+import Login from "../src/authentication/login";
 import "../src/App.css";
 
 export default function App() {
@@ -35,6 +36,13 @@ export default function App() {
               exact
               element={<BookManagement />}
             ></Route>
+
+            <Route path="/login" exact element={<Login />}></Route>
+            {/* <Route
+              path="/bookSettings"
+              exact
+              element={<BookManagement />}
+            ></Route> */}
           </Routes>
         </div>
       </BrowserRouter>

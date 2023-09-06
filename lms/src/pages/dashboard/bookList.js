@@ -11,6 +11,7 @@ import {
   CardContent,
   CardMedia,
   Box,
+  Tooltip,
 } from "@mui/material";
 
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
@@ -18,12 +19,11 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import ImgPlaceHolder from "../../assets/images/book.jpg";
 
-// import { makeStyles } from "@mui/styles";
-
 import "../../assets/styles/bookStyle.css";
 
 function BookList({ selectedCatalogId }) {
   const [books, setBooks] = useState([]);
+  const [catalogs, setCatalogs] = useState([]);
 
   useEffect(() => {
     const fetchBooks = async (bookGenre) => {
@@ -50,6 +50,17 @@ function BookList({ selectedCatalogId }) {
       }
     };
 
+    const fetchCatalogs = async () => {
+      const catalogsCollection = collection(db, "catalog");
+      const catalogsSnapshot = await getDocs(catalogsCollection);
+      const catalogList = catalogsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setCatalogs(catalogList);
+    };
+
+    fetchCatalogs();
     fetchBooks(selectedCatalogId);
   }, [selectedCatalogId]);
 
@@ -60,7 +71,6 @@ function BookList({ selectedCatalogId }) {
           display: "flex",
           justifyContent: "center", // Center horizontally
           alignItems: "center", // Center vertically
-          // minHeight: "70vh", // Take the full height of the viewport
           p: 3,
         }}
       >
@@ -72,28 +82,36 @@ function BookList({ selectedCatalogId }) {
                   <CardMedia
                     component="img"
                     alt={book.bookTitle}
-                    // height="200"
                     width="400"
                     image={ImgPlaceHolder}
                     title={book.bookTitle}
                   />
                   <CardContent>
-                    <Typography
-                      sx={{ fontSize: "15pt", marginBottom: "20px" }}
-                      className="book-title-div"
-                    >
-                      {book.bookTitle}
-                    </Typography>
+                    <Tooltip title={book.bookTitle} arrow>
+                      <Typography
+                        sx={{
+                          fontSize: "15pt",
+                          marginBottom: "15px",
+                          fontWeight: "600",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                        className="book-title-div"
+                      >
+                        {book.bookTitle}
+                      </Typography>
+                    </Tooltip>
                     <Typography
                       sx={{ fontSize: "10pt" }}
                       className="book-Genre-div"
                     >
-                      {book.selectedCatalogId}
+                      {
+                        catalogs.find(
+                          (catalog) => catalog.id === book.bookGenre
+                        )?.catalog_name
+                      }
                     </Typography>
-                    {/* <Typography variant="body2" color="text.secondary">
-                      {book.bookDescription}
-                    </Typography> */}
-
                     <Typography className="bookAvailableText">
                       Available: {book.bookAvailCopies} of {book.bookTotal}
                     </Typography>

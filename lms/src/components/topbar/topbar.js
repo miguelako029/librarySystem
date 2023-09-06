@@ -169,9 +169,11 @@ export default function TopBar() {
         position="fixed"
         elevation={0}
         sx={{
-          backgroundColor: "#ffffff",
-          color: "#2f2f2f",
+          backdropFilter: "blur(16px) saturate(180%)",
+          // -webkit-backdrop-filter: blur(16px) saturate(180%);
+          backgroundColor: "rgba(255, 255, 255, 0.75)",
           // boxShadow: "0",
+          color: "#666",
         }}
       >
         <Toolbar>
@@ -193,15 +195,13 @@ export default function TopBar() {
           >
             Library System
           </Typography>
-          {/* <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
+          <Search>
+            <SearchIconWrapper>{/* <SearchIcon /> */}</SearchIconWrapper>
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
             />
-          </Search> */}
+          </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             {/* <IconButton
