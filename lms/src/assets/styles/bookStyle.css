@@ -1,8 +1,9 @@
 .book-card {
   width: 200px;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
+  background-color: rgb(20, 95, 160);
   padding: 10px;
-  margin: 10px;
+  margin: 20px;
   position: relative;
   transition: transform 0.2s;
 }
@@ -32,10 +33,20 @@
 }
 
 /* Additional styles for product details */
-.book-title {
-  font-weight: bold;
+.book-title-div {
+  font-weight: 200;
+  font-size: 30pt;
+  margin-bottom: 20px;
+  color: #007bff;
+}
+
+.book-Genre-div {
+  color: #666666;
 }
 
 .book-author {
   color: #555;
+}
+.bookAvailableText {
+  font-size: 9pt;
 }
