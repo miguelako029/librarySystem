@@ -1,6 +1,5 @@
 import React from "react";
-import SideBar from "./components/sidebar/sidebar";
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import Dashboard from "./pages/dashboard/dashboard";
 import Users from "./pages/userManagement/users";
 import Books from "./pages/books/books";
@@ -9,43 +8,90 @@ import Reservation from "./pages/reservation";
 import Catalog from "./pages/catalogRep/catalogs";
 import CatalogSettings from "./pages/catalogRep/catalogSettings";
 import BookLoan from "./pages/books/bookloan";
-import Login from "../src/authentication/login";
-import "../src/App.css";
+import Login from "./authentication/login"; // Correct import path
+import "./App.css";
 
 export default function App() {
+  const currentUser = false;
+
+  const RequireAuth = ({ children }) => {
+    return currentUser ? children : <Navigate to="/login" />;
+  };
+
   return (
-    <>
-      <BrowserRouter>
-        <div className="App">
-          <Routes>
-            <Route path="/" exact element={<Dashboard />}></Route>
+    <BrowserRouter>
+      <div className="App">
+        <Routes>
+          <Route path="/">
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/dashboard"
+              element={
+                <RequireAuth>
+                  <Dashboard />
+                </RequireAuth>
+              }
+            />
 
-            <Route path="/catalog" exact element={<Catalog />}></Route>
-            <Route path="/catalogsearch" exact element={<Books />}></Route>
-
-            <Route path="/bookLoan" exact element={<BookLoan />}></Route>
-            <Route path="/reservation" exact element={<Reservation />}></Route>
-            <Route path="/userSettings" exact element={<Users />}></Route>
+            <Route
+              path="/catalog"
+              element={
+                <RequireAuth>
+                  <Catalog />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/catalogsearch"
+              element={
+                <RequireAuth>
+                  <Books />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/bookLoan"
+              element={
+                <RequireAuth>
+                  <BookLoan />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/reservation"
+              element={
+                <RequireAuth>
+                  <Reservation />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/userSettings"
+              element={
+                <RequireAuth>
+                  <Users />
+                </RequireAuth>
+              }
+            />
             <Route
               path="/catalogSettings"
-              exact
-              element={<CatalogSettings />}
-            ></Route>
+              element={
+                <RequireAuth>
+                  <CatalogSettings />
+                </RequireAuth>
+              }
+            />
             <Route
               path="/bookSettings"
-              exact
-              element={<BookManagement />}
-            ></Route>
-
-            <Route path="/login" exact element={<Login />}></Route>
-            {/* <Route
-              path="/bookSettings"
-              exact
-              element={<BookManagement />}
-            ></Route> */}
-          </Routes>
-        </div>
-      </BrowserRouter>
-    </>
+              element={
+                <RequireAuth>
+                  <BookManagement />
+                </RequireAuth>
+              }
+            />
+          </Route>
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }

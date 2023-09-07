@@ -1,45 +1,51 @@
 import React, { useState } from "react";
-import {
-  Container,
-  Typography,
-  Paper,
-  Grid,
-  TextField,
-  Button,
-  Link,
-} from "@mui/material";
+import { Container, Typography, Paper, TextField, Button } from "@mui/material";
+import { auth } from "../firebase-config"; // Import the Firebase auth instance
 
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
+  const [error, setError] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLoginChange = (e) => {
-    const { name, value } = e.target;
-    setLoginData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+  const navigate = useNavigate();
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
   };
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Logging in with:", loginData);
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        navigate("/dashboard"); // Use navigate to redirect to the root URL
+        // ...
+      })
+      .catch((error) => {
+        setError(true);
+      });
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <Paper
         elevation={3}
-        sx={{
-          padding: 2,
+        style={{
+          padding: 20,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <Typography variant="h5">Login</Typography>
@@ -57,8 +63,8 @@ export default function Login() {
             name="email"
             autoComplete="email"
             autoFocus
-            value={loginData.email}
-            onChange={handleLoginChange}
+            value={email}
+            onChange={handleEmailChange}
           />
           <TextField
             variant="outlined"
@@ -70,22 +76,20 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
-            value={loginData.password}
-            onChange={handleLoginChange}
+            value={password}
+            onChange={handlePasswordChange}
           />
           <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
-            sx={{ marginTop: "1rem" }}
+            style={{ marginTop: "1rem" }}
           >
             Sign In
           </Button>
+          {error && <span>Wrong Email or password! </span>}
         </form>
-        <Link href="#" variant="body2" sx={{ marginTop: "1rem" }}>
-          Forgot password?
-        </Link>
       </Paper>
     </Container>
   );
