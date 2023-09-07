@@ -34,7 +34,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+
+import { auth } from "../../firebase-config";
 
 export default function AddUser({ closeEvent }) {
   //modal
@@ -45,6 +47,7 @@ export default function AddUser({ closeEvent }) {
   const [Mname, setMname] = useState("");
   const [lname, setLname] = useState("");
   const [emailAdd, setEmailAdd] = useState("");
+  const [password, setPassword] = useState("");
   const [contactNo, setContact] = useState("");
   const [birthday, setBirthday] = useState(null);
   const [address, setAddress] = useState("");
@@ -57,133 +60,137 @@ export default function AddUser({ closeEvent }) {
   // const [rows, setRows] = useState([]);
 
   //handling
-  const setRows = useAppStore(state => state.setRows);
+  const setRows = useAppStore((state) => state.setRows);
   const empCollectionRef = collection(db, "users");
   const [error, setError] = useState(false);
 
-  const handleFnameChange = event => {
+  const handleFnameChange = (event) => {
     setFname(event.target.value);
   };
-  const handleMnameChange = event => {
+  const handleMnameChange = (event) => {
     setMname(event.target.value);
   };
-  const handleLnameChange = event => {
+  const handleLnameChange = (event) => {
     setLname(event.target.value);
   };
-  const handleEmailAddChange = event => {
+  const handleEmailAddChange = (event) => {
     setEmailAdd(event.target.value);
   };
-  const handleBirthdayChange = date => {
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+  const handleBirthdayChange = (date) => {
     setBirthday(date);
   };
-  const handleAddressChange = event => {
+  const handleAddressChange = (event) => {
     setAddress(event.target.value);
   };
-  const handleStatePChange = event => {
+  const handleStatePChange = (event) => {
     setStateP(event.target.value);
   };
-  const handleCityChange = event => {
+  const handleCityChange = (event) => {
     setCity(event.target.value);
   };
-  const handlePostalChange = event => {
+  const handlePostalChange = (event) => {
     setPostal(event.target.value);
   };
-  const handleCountryChange = event => {
+  const handleCountryChange = (event) => {
     setCountry(event.target.value);
   };
-  const handleContactChange = event => {
+  const handleContactChange = (event) => {
     setContact(event.target.value);
   };
-  const handleAgeChange = event => {
+  const handleAgeChange = (event) => {
     setAge(event.target.value);
   };
 
   const createUser = async () => {
-    if (
-      fname.trim() === "" ||
-      Mname.trim() === "" ||
-      lname.trim() === "" ||
-      emailAdd.trim() === "" ||
-      contactNo.trim() === "" ||
-      address.trim() === "" ||
-      // (birthday && birthday.trim && birthday.trim() === "") ||
-      city.trim() === "" ||
-      postal.trim() === "" ||
-      country.trim() === ""
-    ) {
-      closeEvent();
-      Swal.fire("Error", "Please complete all the field", "error").then(() => {
-        setError(true);
-      });
-      // Prevent adding user if any field is empty
-    } else {
-      const birthdayDate = new Date(birthday);
-      if (isNaN(birthdayDate.getTime())) {
-        // Handle invalid date input
-        console.error("Invalid date format");
-        return;
+    try {
+      if (
+        fname.trim() === "" ||
+        Mname.trim() === "" ||
+        lname.trim() === "" ||
+        emailAdd.trim() === "" || // Make sure to declare or retrieve emailAdd
+        contactNo.trim() === "" ||
+        address.trim() === "" ||
+        // (birthday && birthday.trim && birthday.trim() === "") ||
+        city.trim() === "" ||
+        postal.trim() === "" ||
+        country.trim() === ""
+      ) {
+        closeEvent();
+        Swal.fire("Error", "Please complete all the fields", "error").then(
+          () => {
+            setError(true);
+          }
+        );
+        // Prevent adding user if any field is empty
+      } else {
+        const birthdayDate = new Date(birthday);
+        if (isNaN(birthdayDate.getTime())) {
+          // Handle invalid date input
+          console.error("Invalid date format");
+          return;
+        }
+        const birthdayTimestamp = Timestamp.fromMillis(birthdayDate.getTime());
+
+        // Create a new user in Firebase Authentication
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          emailAdd, // Make sure to declare or retrieve emailAdd
+          password // Make sure to declare or retrieve password
+        );
+
+        // User created successfully, you can access user information like this:
+        const user = userCredential.user;
+        console.log(user);
+
+        // Continue with your code to add the user to Firestore
+        await addDoc(empCollectionRef, {
+          fname: fname,
+          mname: Mname,
+          lname: lname,
+          emailAdd: emailAdd,
+          password: password,
+          contactNo: contactNo,
+          birthday: birthdayTimestamp,
+          address: address,
+          city: city,
+          StateP: StateP,
+          postal: postal,
+          country: country,
+          age: age,
+          createdDate: serverTimestamp(),
+        });
+
+        getUsers();
+        closeEvent();
+        setFname("");
+        setMname("");
+        setLname("");
+        setEmailAdd("");
+        setContact("");
+        setBirthday(null);
+        setAddress("");
+        setStateP("");
+        setCountry("");
+        setPostal("");
+        setCity("");
+
+        Swal.fire("Submitted!", "Your file has been submitted.", "success");
       }
-      const birthdayTimestamp = Timestamp.fromMillis(birthdayDate.getTime());
-
-      await addDoc(empCollectionRef, {
-        fname: fname,
-        mname: Mname,
-        lname: lname,
-        emailAdd: emailAdd,
-        contactNo: contactNo,
-        birthday: birthdayTimestamp,
-        address: address,
-        city: city,
-        StateP: StateP,
-        postal: postal,
-        country: country,
-        age: age,
-        createdDate: serverTimestamp(),
-      });
-
-      console.log(birthday);
-      getUsers();
-      closeEvent();
-      setFname("");
-      setMname("");
-      setLname("");
-      setEmailAdd("");
-      setContact("");
-      setBirthday(null);
-      setAddress("");
-      setStateP("");
-      setCountry("");
-      setPostal("");
-      setCity("");
-
-      Swal.fire("Submitted!", "Your file has been submitted.", "success");
+    } catch (error) {
+      // Handle any errors that occur during user creation
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error(errorCode, errorMessage);
+      // You can display an error message here if needed
     }
-
-    const user = {
-      fname,
-      lname,
-      age,
-    };
   };
 
   const getUsers = async () => {
     const data = await getDocs(empCollectionRef);
-    setRows(data.docs.map(doc => ({ ...doc.data(), id: doc.id })));
-  };
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
-
-  const sigCanvasRef = useRef(null);
-
-  const captureSignature = () => {
-    const base64Image = sigCanvasRef.current.toDataURL();
-    // Use the base64Image as needed (e.g., save to database or display preview)
+    setRows(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
   return (
@@ -249,6 +256,18 @@ export default function AddUser({ closeEvent }) {
             error={error && emailAdd.trim() === ""}
             value={emailAdd}
             onChange={handleEmailAddChange}
+            variant="outlined"
+            required
+            sx={{ minWidth: "100%" }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="outlined-basic"
+            label="Password"
+            error={error && password.trim() === ""}
+            value={password}
+            onChange={handlePasswordChange}
             variant="outlined"
             required
             sx={{ minWidth: "100%" }}
