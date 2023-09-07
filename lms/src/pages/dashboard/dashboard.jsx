@@ -26,7 +26,7 @@ export default function Home() {
           p: 3,
         }}
       >
-        <Container>
+        <Container sx={{ marginLeft: "30px" }}>
           {/* Use the GetCatalogButton component here and pass selectedCatalogId as a prop */}
           <GetCatalogButton
             setSelectedCatalogId={setSelectedCatalogId}

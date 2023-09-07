@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Container, Typography, Paper, TextField, Button } from "@mui/material";
 import { auth } from "../firebase-config"; // Import the Firebase auth instance
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+
+import { AuthContextProvide } from "../authentication/AuthenticatorContext"; // Correct import path
 
 export default function Login() {
   const [error, setError] = useState(false);
@@ -20,6 +22,8 @@ export default function Login() {
     setPassword(event.target.value);
   };
 
+  const { dispatch } = useContext(AuthContextProvide);
+
   const handleLoginSubmit = (e) => {
     e.preventDefault();
 
@@ -28,7 +32,8 @@ export default function Login() {
         // Signed in
         const user = userCredential.user;
         console.log(user);
-        navigate("/dashboard"); // Use navigate to redirect to the root URL
+        dispatch({ type: "LOGIN", payload: user });
+        navigate("/"); // Use navigate to redirect to the root URL
         // ...
       })
       .catch((error) => {
