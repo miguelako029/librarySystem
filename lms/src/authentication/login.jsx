@@ -5,7 +5,7 @@ import { auth } from "../firebase-config"; // Import the Firebase auth instance
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-import { AuthContextProvide } from "../authentication/AuthenticatorContext"; // Correct import path
+import { AuthContextProvide } from "../components/context/AuthenticatorContext"; // Correct import path
 
 export default function Login() {
   const [error, setError] = useState(false);

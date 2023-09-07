@@ -10,7 +10,7 @@ import CatalogSettings from "./pages/catalogRep/catalogSettings";
 import BookLoan from "./pages/books/bookloan";
 import Login from "./authentication/login";
 import "./App.css";
-import { AuthContextProvide } from "./authentication/AuthenticatorContext"; // Correct import path
+import { AuthContextProvide } from "./components/context/AuthenticatorContext"; // Correct import path
 
 export default function App() {
   const { currentUser } = useContext(AuthContextProvide);

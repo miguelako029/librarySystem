@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { AuthContextProvider } from "./authentication/AuthenticatorContext"; // Correct import path
+import { AuthContextProvider } from "./components/context/AuthenticatorContext"; // Correct import path
 
 ReactDOM.render(
   <React.StrictMode>
