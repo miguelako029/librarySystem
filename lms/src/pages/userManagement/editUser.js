@@ -35,6 +35,8 @@ import { db } from "../../firebase-config";
 import Swal from "sweetalert2";
 import { useAppStore } from "../../AppStore";
 
+import { updatePassword, getAuth } from "firebase/auth";
+
 import dayjs from "dayjs";
 
 export default function EditUser({ fid, closeEvent }) {
@@ -113,33 +115,59 @@ export default function EditUser({ fid, closeEvent }) {
   };
 
   const updateUser = async () => {
-    if (fname.trim() === "" || lname.trim() === "" || mname.trim() === "") {
+    if (
+      fname.trim() === "" ||
+      lname.trim() === "" ||
+      mname.trim() === "" ||
+      emailAdd.trim() === "" ||
+      password.trim() === "" || // Add password validation
+      contactNo.trim() === "" ||
+      // birthday.trim() === "" ||
+      address.trim() === "" ||
+      stateP.trim() === "" ||
+      city.trim() === "" ||
+      postal.trim() === "" ||
+      country.trim() === ""
+    ) {
       closeEvent();
-      Swal.fire("Error", "Please complete all the field", "error").then(() => {
+      Swal.fire("Error", "Please complete all the fields", "error").then(() => {
         setError(true);
       });
-      // Prevent adding user if any field is empty
     } else {
-      const userDoc = doc(db, "users", fid.id);
-      const newfields = {
-        fname: fname,
-        mname: mname,
-        lname: lname,
-        emailAdd: emailAdd,
-        password: password,
-        contactNo: contactNo,
-        birthday: birthday,
-        address: address,
-        stateP: stateP,
-        city: city,
-        postal: postal,
-        country: country,
-        updatedDate: serverTimestamp(),
-      };
-      await updateDoc(userDoc, newfields);
-      getUsers();
-      closeEvent();
-      Swal.fire("Updated!", "Your details has been updated.", "success");
+      try {
+        // Update the user's password in Firebase Authentication
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (user) {
+          await updatePassword(user, password);
+        }
+
+        const userDoc = doc(db, "users", fid.id);
+        const newfields = {
+          fname: fname,
+          mname: mname,
+          lname: lname,
+          emailAdd: emailAdd,
+          password: password, // Update the password in the Firestore document
+          contactNo: contactNo,
+          birthday: birthday,
+          address: address,
+          stateP: stateP,
+          city: city,
+          postal: postal,
+          country: country,
+          updatedDate: serverTimestamp(),
+        };
+        await updateDoc(userDoc, newfields);
+        getUsers();
+        closeEvent();
+        Swal.fire("Updated!", "Your details have been updated.", "success");
+      } catch (error) {
+        console.error("Update user error:", error);
+        // Handle any errors that occur during the update
+        Swal.fire("Error", "Failed to update user password.", "error");
+      }
     }
   };
 

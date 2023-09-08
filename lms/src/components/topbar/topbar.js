@@ -1,4 +1,4 @@
-import * as React from "react";
+import { React, useEffect, useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -20,6 +20,9 @@ import { useAppStore } from "../../AppStore";
 import LogoutButton from "../../authentication/logout";
 
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useAuthState } from "@react-firebase/auth";
 
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
@@ -55,7 +58,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -90,6 +92,9 @@ export default function TopBar() {
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+
+  const auth = getAuth();
+  const [user] = useAuthState(auth);
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -153,18 +158,31 @@ export default function TopBar() {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
+      {user ? (
+        <MenuItem onClick={handleProfileMenuOpen}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="primary-search-account-menu"
+            aria-haspopup="true"
+            color="inherit"
+          >
+            {user.displayName ? (
+              <AccountCircle />
+            ) : (
+              <Typography variant="body2">{user.email}</Typography>
+            )}
+          </IconButton>
+          <p>Profile</p>
+        </MenuItem>
+      ) : (
+        <MenuItem>
+          <IconButton size="large" color="inherit">
+            <AccountCircle />
+          </IconButton>
+          <p>Profile</p>
+        </MenuItem>
+      )}
     </Menu>
   );
 
@@ -175,9 +193,7 @@ export default function TopBar() {
         elevation={0}
         sx={{
           backdropFilter: "blur(16px) saturate(180%)",
-          // -webkit-backdrop-filter: blur(16px) saturate(180%);
           backgroundColor: "rgba(255, 255, 255, 0.75)",
-          // boxShadow: "0",
           color: "#666",
         }}
       >
@@ -209,15 +225,6 @@ export default function TopBar() {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            {/* <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton> */}
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
@@ -227,6 +234,11 @@ export default function TopBar() {
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
+            {user ? (
+              <Typography>{user.email}</Typography>
+            ) : (
+              <Typography>Guest</Typography>
+            )}
             <IconButton
               size="large"
               edge="end"
