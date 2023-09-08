@@ -21,8 +21,7 @@ import LogoutButton from "../../authentication/logout";
 
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useAuthState } from "@react-firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import onAuthStateChanged
 
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
@@ -68,8 +67,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function TopBar() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const updateOpen = useAppStore((state) => state.updateOpen);
   const dopen = useAppStore((state) => state.dopen);
 
@@ -94,7 +93,18 @@ export default function TopBar() {
   };
 
   const auth = getAuth();
-  const [user] = useAuthState(auth);
+  const [user, setUser] = useState(null); // State to store the user
+
+  useEffect(() => {
+    // Subscribe to auth state changes
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // Update the user state when the auth state changes
+      setUser(user);
+    });
+
+    // Unsubscribe when the component unmounts
+    return () => unsubscribe();
+  }, [auth]);
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -152,7 +162,7 @@ export default function TopBar() {
           aria-label="show 17 new notifications"
           color="inherit"
         >
-          <Badge badgeContent={17} color="error">
+          <Badge badgeContent={1} color="error">
             <ShoppingCartIcon />
           </Badge>
         </IconButton>
