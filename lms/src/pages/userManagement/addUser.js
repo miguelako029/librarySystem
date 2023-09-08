@@ -143,10 +143,13 @@ export default function AddUser({ closeEvent }) {
 
         // User created successfully, you can access user information like this:
         const user = userCredential.user;
+        const uid = user.uid; // Retrieve the UID (User ID) of the newly created user
+
         console.log(user);
 
         // Continue with your code to add the user to Firestore
         await addDoc(empCollectionRef, {
+          uid: uid,
           fname: fname,
           mname: Mname,
           lname: lname,

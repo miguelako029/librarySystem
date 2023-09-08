@@ -43,6 +43,7 @@ export default function EditUser({ fid, closeEvent }) {
   const [mname, setMname] = useState("");
   const [lname, setLname] = useState("");
   const [emailAdd, setEmailAdd] = useState("");
+  const [password, setPassword] = useState("");
   const [contactNo, setContact] = useState("");
   const [birthday, setBirthday] = useState(null);
   const [address, setAddress] = useState("");
@@ -60,6 +61,7 @@ export default function EditUser({ fid, closeEvent }) {
     setLname(fid.lname);
     setMname(fid.mname);
     setEmailAdd(fid.emailAdd);
+    setPassword(fid.password);
     setContact(fid.contactNo);
     setBirthday(fid.birthday);
     setAddress(fid.address);
@@ -83,6 +85,11 @@ export default function EditUser({ fid, closeEvent }) {
   const handleEmailAddChange = (event) => {
     setEmailAdd(event.target.value);
   };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
   const handleBirthdayChange = (date) => {
     setBirthday(Timestamp.fromDate(date.toDate())); // Convert the selected date to a Firebase Timestamp
   };
@@ -119,6 +126,7 @@ export default function EditUser({ fid, closeEvent }) {
         mname: mname,
         lname: lname,
         emailAdd: emailAdd,
+        password: password,
         contactNo: contactNo,
         birthday: birthday,
         address: address,
@@ -203,6 +211,18 @@ export default function EditUser({ fid, closeEvent }) {
             error={error && emailAdd.trim() === ""}
             value={emailAdd}
             onChange={handleEmailAddChange}
+            variant="outlined"
+            required
+            sx={{ minWidth: "100%" }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="outlined-basic"
+            label="Password"
+            error={error && password.trim() === ""}
+            value={password}
+            onChange={handlePasswordChange}
             variant="outlined"
             required
             sx={{ minWidth: "100%" }}

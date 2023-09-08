@@ -17,6 +17,8 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { useAppStore } from "../../AppStore";
 
+import LogoutButton from "../../authentication/logout";
+
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
@@ -108,7 +110,9 @@ export default function TopBar() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+      <MenuItem>
+        <LogoutButton />
+      </MenuItem>
     </Menu>
   );
 

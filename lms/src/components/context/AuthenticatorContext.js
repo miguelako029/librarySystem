@@ -14,9 +14,15 @@ export const AuthContextProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(state.currentUser));
   }, [state.currentUser]);
 
+  // Handle the "LOGOUT" action to clear user data
+  const handleLogout = () => {
+    dispatch({ type: "LOGOUT" });
+    localStorage.removeItem("user");
+  };
+
   return (
     <AuthContextProvide.Provider
-      value={{ currentUser: state.currentUser, dispatch }}
+      value={{ currentUser: state.currentUser, dispatch, handleLogout }}
     >
       {children}
     </AuthContextProvide.Provider>
