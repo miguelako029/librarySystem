@@ -23,6 +23,8 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import onAuthStateChanged
 
+import UserProfile from "../context/UserProfile";
+
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
 }));
@@ -168,31 +170,24 @@ export default function TopBar() {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      {user ? (
-        <MenuItem onClick={handleProfileMenuOpen}>
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="primary-search-account-menu"
-            aria-haspopup="true"
-            color="inherit"
-          >
-            {user.displayName ? (
-              <AccountCircle />
-            ) : (
-              <Typography variant="body2">{user.email}</Typography>
-            )}
-          </IconButton>
-          <p>Profile</p>
-        </MenuItem>
-      ) : (
-        <MenuItem>
-          <IconButton size="large" color="inherit">
-            <AccountCircle />
-          </IconButton>
-          <p>Profile</p>
-        </MenuItem>
-      )}
+
+      <MenuItem onClick={handleProfileMenuOpen}>
+        <IconButton
+          size="large"
+          aria-label="account of current user"
+          aria-controls="primary-search-account-menu"
+          aria-haspopup="true"
+          color="inherit"
+        ></IconButton>
+        <p>Profile</p>
+      </MenuItem>
+
+      <MenuItem>
+        <IconButton size="large" color="inherit">
+          <AccountCircle />
+        </IconButton>
+        <p>Profile</p>
+      </MenuItem>
     </Menu>
   );
 
@@ -235,6 +230,8 @@ export default function TopBar() {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
+           
+
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
@@ -244,11 +241,7 @@ export default function TopBar() {
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
-            {user ? (
-              <Typography>{user.email}</Typography>
-            ) : (
-              <Typography>Guest</Typography>
-            )}
+
             <IconButton
               size="large"
               edge="end"

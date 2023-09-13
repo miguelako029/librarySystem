@@ -13,6 +13,7 @@ import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -32,10 +33,11 @@ import EventAvailableOutlinedIcon from "@mui/icons-material/EventAvailableOutlin
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import PlaylistAddOutlinedIcon from "@mui/icons-material/PlaylistAddOutlined";
 import AddToPhotosOutlinedIcon from "@mui/icons-material/AddToPhotosOutlined";
+import UserProfile from "../context/UserProfile";
 
 const drawerWidth = 270;
 
-const openedMixin = theme => ({
+const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
@@ -44,7 +46,7 @@ const openedMixin = theme => ({
   overflowX: "hidden",
 });
 
-const closedMixin = theme => ({
+const closedMixin = (theme) => ({
   transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -66,7 +68,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: prop => prop !== "open",
+  shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   width: drawerWidth,
   flexShrink: 0,
@@ -87,7 +89,7 @@ export default function MiniDrawer() {
   // const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
   // const updateOpen = useAppStore(state => state.UpdateOpen);
-  const open = useAppStore(state => state.dopen);
+  const open = useAppStore((state) => state.dopen);
 
   // const handleDrawerOpen = () => {
   //   setOpen(true);
@@ -131,7 +133,12 @@ export default function MiniDrawer() {
           </IconButton>
         </DrawerHeader>
         <Divider />
-
+        <div>
+          <Avatar alt="" src="" />
+          <Typography variant="h6">
+            <UserProfile />
+          </Typography>
+        </div>
         <List className="list">
           {[
             "Dashboard",
