@@ -61,7 +61,7 @@ function BookList({ selectedCatalogId }) {
     };
 
     fetchCatalogs();
-    fetchBooks(selectedCatalogId);
+    fetchBooks(selectedCatalogId || "all"); // Use "all" as the default catalog
   }, [selectedCatalogId]);
 
   return (

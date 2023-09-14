@@ -50,8 +50,7 @@ const UserDisplay = () => {
     <div>
       {currentUser ? (
         <div>
-          <Avatar alt={currentUser.displayName} src={currentUser.photoURL} />
-          <Typography variant="h6">{fname}</Typography>
+          <Typography variant="h6">Hi! {fname}</Typography>
         </div>
       ) : (
         <p>Please sign in to see your email and username</p>

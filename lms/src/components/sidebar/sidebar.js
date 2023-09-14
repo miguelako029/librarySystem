@@ -133,13 +133,13 @@ export default function MiniDrawer() {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <div>
-          <Avatar alt="" src="" />
-          <Typography variant="h6">
-            <UserProfile />
-          </Typography>
-        </div>
         <List className="list">
+          <UserProfile />
+        </List>
+        <List className="list">
+          {/* <Typography variant="h6">
+            <UserProfile />
+          </Typography> */}
           {[
             "Dashboard",
             "Catalog",

@@ -23,7 +23,10 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import onAuthStateChanged
 
+import Cart from "../cart/cartDrawer";
+
 import UserProfile from "../context/UserProfile";
+import TemporaryDrawer from "../cart/cartDrawer";
 
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
@@ -230,15 +233,9 @@ export default function TopBar() {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-           
-
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
+            <IconButton color="inherit">
               <Badge badgeContent={1} color="error">
-                <ShoppingCartIcon />
+                <TemporaryDrawer />
               </Badge>
             </IconButton>
 
