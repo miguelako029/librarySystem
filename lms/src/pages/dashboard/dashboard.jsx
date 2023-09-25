@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { db, auth } from "../../firebase-config"; // Import Firebase auth and firestore from your firebase-config file
 import SideBar from "../../components/sidebar/sidebar";
 import TopBar from "../../components/topbar/topbar";
 import { Box, Container, CssBaseline } from "@mui/material";
@@ -7,58 +8,46 @@ import "../../assets/styles/bookStyle.css";
 import BookList from "../dashboard/bookList"; // Import the BookList component
 import GetCatalogButton from "../dashboard/catalogButton"; // Import the GetCatalogButton component
 
+import { collection, getFirestore, doc, setDoc } from "firebase/firestore";
+
 export default function Dashboard() {
   const [selectedCatalogId, setSelectedCatalogId] = useState(null);
+  const [uid, setUid] = useState(null);
 
-  function getUserId() {
-    const [uid, setUserId] = useState(null);
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUid(user.uid);
+      } else {
+        setUid(null);
+      }
+    });
 
-    useEffect(() => {
-      const unsubscribe = auth.onAuthStateChanged((user) => {
-        if (user) {
-          setUserId(user.uid); // Set the uid state with user's uid
-        } else {
-          setUserId(null); // Clear uid when user is not authenticated
-        }
-      });
+    // Clean up the subscription when the component unmounts
+    return () => unsubscribe();
+  }, []);
 
-      // Clean up the subscription when the component unmounts
-      return () => unsubscribe();
-    }, []);
+  const SelectedBook = (book) => {
+    console.log(book);
+    const newBook = { ...book };
+    newBook.qty = 1;
+    newBook.BookCount = book.bookTotal - newBook.qty;
 
-    return uid; // Return the uid state variable
-  }
+    const userId = uid;
 
-  function getCurrentUser() {
-    const [user, setUser] = useState(null);
+    if (uid) {
+      const cartCollection = collection(db, "Cart ");
+      const cartDoc = doc(cartCollection, book.id);
 
-    useEffect(() => {
-      const unsubscribe = auth.onAuthStateChanged((user) => {
-        if (user) {
-          fs.collection("users")
-            .doc(user.uid) // Use user.uid to access the user's ID
-            .get()
-            .then((snapshot) => {
-              setUser(snapshot.data().firstName);
-            })
-            .catch((error) => {
-              // Handle any errors here
-              console.error("Error getting user data:", error);
-            });
-        } else {
-          setUser(null);
-        }
-      });
-
-      // Clean up the subscription when the component unmounts
-      return () => unsubscribe();
-    }, []);
-
-    return user;
-  }
-
-  const SelectedBook = (books) => {
-    console.log(books);
+      // Use setDoc directly and handle the promise with .then
+      setDoc(cartDoc, newBook)
+        .then(() => {
+          console.log("added to cart");
+        })
+        .catch((error) => {
+          console.error("Error adding to cart:", error);
+        });
+    }
   };
 
   return (
