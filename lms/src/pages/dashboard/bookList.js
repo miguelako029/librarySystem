@@ -122,7 +122,7 @@ export const BookList = ({ selectedCatalogId, SelectedBook }) => {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => handleAddToCart(book)}
+                      onClick={() => handleAddToCart(book.id)}
                     >
                       Add to cart
                     </Button>

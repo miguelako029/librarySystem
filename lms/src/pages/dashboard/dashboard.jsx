@@ -13,6 +13,7 @@ import {
   increment,
   runTransaction,
 } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { db } from "../../firebase-config";
 
 export default function Dashboard() {
@@ -32,15 +33,18 @@ export default function Dashboard() {
   }, []);
 
   const SelectedBook = (book) => {
-    if (uid) {
+    const auth = getAuth(); // Initialize the authentication module
+
+    if (auth.currentUser) {
       // Construct the reference to the user's cart document
-      const cartCollectionName = `cart_${uid}`;
+      const cartCollectionName = `cart_${auth.currentUser.uid}`;
       const cartCollection = collection(db, cartCollectionName);
       console.log("Cart Collection Name:", cartCollectionName);
-      console.log(uid);
+
       // Update the cart with the selected book using 'setDoc'
       // Here, we are setting the product ID as the document key and value as true
-      setDoc(doc(cartCollection, book.id), {
+      const cartDocRef = doc(cartCollection, book); // Create the document reference
+      setDoc(cartDocRef, {
         [book.id]: true,
       })
         .then(() => {
