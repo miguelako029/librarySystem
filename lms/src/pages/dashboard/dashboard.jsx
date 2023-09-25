@@ -28,19 +28,15 @@ export default function Dashboard() {
   }, []);
 
   const SelectedBook = (book) => {
-    console.log(book);
-    const newBook = { ...book };
-    newBook.qty = 1;
-    newBook.BookCount = book.bookTotal - newBook.qty;
-
-    const userId = uid;
-
     if (uid) {
-      const cartCollection = collection(db, "Cart ");
+      const Book = { ...book };
+      Book.BookCount = book.bookTotal - 1;
+
+      // Use Firestore to add the document directly to the collection
+      const cartCollection = collection(db, "cart" + uid);
       const cartDoc = doc(cartCollection, book.id);
 
-      // Use setDoc directly and handle the promise with .then
-      setDoc(cartDoc, newBook)
+      setDoc(cartDoc, Book)
         .then(() => {
           console.log("added to cart");
         })
