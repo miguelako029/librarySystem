@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { db, auth } from "../../firebase-config"; // Import Firebase auth and firestore from your firebase-config file
+import { auth } from "../../firebase-config";
 import SideBar from "../../components/sidebar/sidebar";
 import TopBar from "../../components/topbar/topbar";
 import { Box, Container, CssBaseline } from "@mui/material";
 import "../../assets/styles/bookStyle.css";
-
-import BookList from "../dashboard/bookList"; // Import the BookList component
-import GetCatalogButton from "../dashboard/catalogButton"; // Import the GetCatalogButton component
-
-import { collection, getFirestore, doc, setDoc } from "firebase/firestore";
+import BookList from "../dashboard/bookList";
+import GetCatalogButton from "../dashboard/catalogButton";
+import {
+  collection,
+  doc,
+  setDoc,
+  increment,
+  runTransaction,
+} from "firebase/firestore";
+import { db } from "../../firebase-config";
 
 export default function Dashboard() {
   const [selectedCatalogId, setSelectedCatalogId] = useState(null);
@@ -23,32 +28,34 @@ export default function Dashboard() {
       }
     });
 
-    // Clean up the subscription when the component unmounts
     return () => unsubscribe();
   }, []);
 
   const SelectedBook = (book) => {
     if (uid) {
-      const Book = { ...book };
-      Book.BookCount = book.bookTotal - 1;
-
-      // Use Firestore to add the document directly to the collection
-      const cartCollection = collection(db, "cart" + uid);
-      const cartDoc = doc(cartCollection, book.id);
-
-      setDoc(cartDoc, Book)
+      // Construct the reference to the user's cart document
+      const cartCollectionName = `cart_${uid}`;
+      const cartCollection = collection(db, cartCollectionName);
+      console.log("Cart Collection Name:", cartCollectionName);
+      console.log(uid);
+      // Update the cart with the selected book using 'setDoc'
+      // Here, we are setting the product ID as the document key and value as true
+      setDoc(doc(cartCollection, book.id), {
+        [book.id]: true,
+      })
         .then(() => {
-          console.log("added to cart");
+          console.log("Added to cart");
         })
         .catch((error) => {
           console.error("Error adding to cart:", error);
+          console.log(cartCollectionName);
         });
     }
   };
 
   return (
     <>
-      <CssBaseline /> {/* Reset default styles */}
+      <CssBaseline />
       <TopBar />
       <SideBar />
       <Box
@@ -56,23 +63,19 @@ export default function Dashboard() {
           marginLeft: "200px",
           marginTop: "30px",
           display: "flex",
-          justifyContent: "center", // Center horizontally
-          alignItems: "center", // Center vertically
-          // minHeight: '60vh', // Take the full height of the viewport
+          justifyContent: "center",
+          alignItems: "center",
           p: 3,
         }}
       >
         <Container sx={{ marginLeft: "30px" }}>
-          {/* Use the GetCatalogButton component here and pass selectedCatalogId as a prop */}
           <GetCatalogButton
             setSelectedCatalogId={setSelectedCatalogId}
             selectedCatalogId={selectedCatalogId}
           />
-
-          {/* Use the BookList component here */}
           <BookList
             selectedCatalogId={selectedCatalogId}
-            SelectedBook={SelectedBook}
+            SelectedBook={SelectedBook} // Pass the addToCart function to the BookList component
           />
         </Container>
       </Box>
