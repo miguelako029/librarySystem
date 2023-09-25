@@ -23,10 +23,10 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import onAuthStateChanged
 
-import Cart from "../cart/cartDrawer";
+import Cart from "../cartSidebar/cartDrawer";
 
 import UserProfile from "../context/UserProfile";
-import TemporaryDrawer from "../cart/cartDrawer";
+import TemporaryDrawer from "../cartSidebar/cartDrawer";
 
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,

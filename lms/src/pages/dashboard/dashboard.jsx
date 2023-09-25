@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "../../components/sidebar/sidebar";
 import TopBar from "../../components/topbar/topbar";
 import { Box, Container, CssBaseline } from "@mui/material";
@@ -7,8 +7,59 @@ import "../../assets/styles/bookStyle.css";
 import BookList from "../dashboard/bookList"; // Import the BookList component
 import GetCatalogButton from "../dashboard/catalogButton"; // Import the GetCatalogButton component
 
-export default function Home() {
+export default function Dashboard() {
   const [selectedCatalogId, setSelectedCatalogId] = useState(null);
+
+  function getUserId() {
+    const [uid, setUserId] = useState(null);
+
+    useEffect(() => {
+      const unsubscribe = auth.onAuthStateChanged((user) => {
+        if (user) {
+          setUserId(user.uid); // Set the uid state with user's uid
+        } else {
+          setUserId(null); // Clear uid when user is not authenticated
+        }
+      });
+
+      // Clean up the subscription when the component unmounts
+      return () => unsubscribe();
+    }, []);
+
+    return uid; // Return the uid state variable
+  }
+
+  function getCurrentUser() {
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+      const unsubscribe = auth.onAuthStateChanged((user) => {
+        if (user) {
+          fs.collection("users")
+            .doc(user.uid) // Use user.uid to access the user's ID
+            .get()
+            .then((snapshot) => {
+              setUser(snapshot.data().firstName);
+            })
+            .catch((error) => {
+              // Handle any errors here
+              console.error("Error getting user data:", error);
+            });
+        } else {
+          setUser(null);
+        }
+      });
+
+      // Clean up the subscription when the component unmounts
+      return () => unsubscribe();
+    }, []);
+
+    return user;
+  }
+
+  const SelectedBook = (books) => {
+    console.log(books);
+  };
 
   return (
     <>
@@ -22,7 +73,7 @@ export default function Home() {
           display: "flex",
           justifyContent: "center", // Center horizontally
           alignItems: "center", // Center vertically
-          // minHeight: "60vh", // Take the full height of the viewport
+          // minHeight: '60vh', // Take the full height of the viewport
           p: 3,
         }}
       >
@@ -34,7 +85,10 @@ export default function Home() {
           />
 
           {/* Use the BookList component here */}
-          <BookList selectedCatalogId={selectedCatalogId} />
+          <BookList
+            selectedCatalogId={selectedCatalogId}
+            SelectedBook={SelectedBook}
+          />
         </Container>
       </Box>
     </>

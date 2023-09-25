@@ -31,6 +31,7 @@ export default function GetCatalogButton({
 
   const handleCatalogButtonClick = (catalogId) => {
     setSelectedCatalogId(catalogId);
+    console.log(catalogId);
   };
 
   return (

@@ -21,7 +21,7 @@ import ImgPlaceHolder from "../../assets/images/book.jpg";
 
 import "../../assets/styles/bookStyle.css";
 
-function BookList({ selectedCatalogId }) {
+export const BookList = ({ selectedCatalogId, SelectedBook }) => {
   const [books, setBooks] = useState([]);
   const [catalogs, setCatalogs] = useState([]);
 
@@ -64,6 +64,10 @@ function BookList({ selectedCatalogId }) {
     fetchBooks(selectedCatalogId || "all"); // Use "all" as the default catalog
   }, [selectedCatalogId]);
 
+  const handleAddToCart = (bookId) => {
+    SelectedBook(bookId);
+  };
+
   return (
     <>
       <Box
@@ -102,7 +106,7 @@ function BookList({ selectedCatalogId }) {
                         {book.bookTitle}
                       </Typography>
                     </Tooltip>
-                    <Typography
+                    {/* <Typography
                       sx={{ fontSize: "10pt" }}
                       className="book-Genre-div"
                     >
@@ -111,11 +115,15 @@ function BookList({ selectedCatalogId }) {
                           (catalog) => catalog.id === book.bookGenre
                         )?.catalog_name
                       }
-                    </Typography>
+                    </Typography> */}
                     <Typography className="bookAvailableText">
                       Available: {book.bookAvailCopies} of {book.bookTotal}
                     </Typography>
-                    <Button variant="contained" color="primary">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleAddToCart(book)}
+                    >
                       Add to cart
                     </Button>
                   </CardContent>
@@ -129,6 +137,6 @@ function BookList({ selectedCatalogId }) {
       </Box>
     </>
   );
-}
+};
 
 export default BookList;

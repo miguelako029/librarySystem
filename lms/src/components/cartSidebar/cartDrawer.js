@@ -11,7 +11,7 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import BookCard from "../cart/bookCard";
+import BookCard from "../cartSidebar/bookCard";
 
 export default function TemporaryDrawer(drawer) {
   const [state, setState] = React.useState({
