@@ -60,6 +60,35 @@ export default function StickyHeadTable() {
   }, []);
 
   console.log(currentUser);
+  useEffect(() => {
+    getUserCart();
+  }, []);
+
+  // Helper function to merge rows with the same book and add bookQty
+  const mergeRows = (data) => {
+    const mergedData = [];
+    const seenBooks = new Set();
+
+    data.forEach((item) => {
+      if (!seenBooks.has(item.book)) {
+        // Add the item to the mergedData if book hasn't been seen before
+        seenBooks.add(item.book);
+        mergedData.push(item);
+      } else {
+        // Find the existing item in mergedData and add the bookQty
+        const existingItem = mergedData.find(
+          (mergedItem) => mergedItem.book === item.book
+        );
+        if (existingItem) {
+          existingItem.bookQty += item.bookQty;
+        }
+      }
+    });
+
+    return mergedData;
+  };
+
+  console.log(currentUser);
   const getUserCart = async () => {
     const querySnapshot = await getDocs(empCollectionRef);
     const data = querySnapshot.docs.map((doc) => ({
@@ -70,11 +99,14 @@ export default function StickyHeadTable() {
     // Filter the data array to include only items where userId matches currentUser.uid
     const filteredData = data.filter((item) => item.userId === currentUser.uid);
 
-    // Log the filtered data
-    console.log("Filtered Data:", filteredData);
+    // Merge rows with the same book and add bookQty
+    const mergedData = mergeRows(filteredData);
 
-    // Set the filtered data in the state
-    setRows(filteredData);
+    // Log the merged data
+    console.log("Merged Data:", mergedData);
+
+    // Set the merged data in the state
+    setRows(mergedData);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -269,6 +301,9 @@ export default function StickyHeadTable() {
                 <TableCell align="left" style={{ minWidth: "100px" }}>
                   UserId
                 </TableCell>
+                <TableCell align="left" style={{ minWidth: "100px" }}>
+                  Qty
+                </TableCell>
 
                 <TableCell align="left">Actions</TableCell>
               </TableRow>
@@ -280,8 +315,8 @@ export default function StickyHeadTable() {
                   <TableRow key={row.id} hover role="checkbox" tabIndex={-1}>
                     <TableCell align="left">{row.book}</TableCell>
                     <TableCell align="left">{row.userId}</TableCell>
-                    {/* <TableCell align="left">{row.lname}</TableCell>
-                    <TableCell align="left">{row.emailAdd}</TableCell>
+                    <TableCell align="left">{row.bookQty}</TableCell>
+                    {/* <TableCell align="left">{row.emailAdd}</TableCell>
                     <TableCell align="left">{row.contactNo}</TableCell>
                     <TableCell align="left">
                       {" "}
