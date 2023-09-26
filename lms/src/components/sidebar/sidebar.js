@@ -29,7 +29,7 @@ import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
 import EventAvailableOutlinedIcon from "@mui/icons-material/EventAvailableOutlined";
-
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import PlaylistAddOutlinedIcon from "@mui/icons-material/PlaylistAddOutlined";
 import AddToPhotosOutlinedIcon from "@mui/icons-material/AddToPhotosOutlined";
@@ -142,14 +142,14 @@ export default function MiniDrawer() {
           </Typography> */}
           {[
             "Dashboard",
-            "Catalog",
+            "Cart",
             "Search and Discovery",
             "Borrowing",
             "Reservations/Holds",
           ].map((text, index) => {
             const urls = [
               "/",
-              "/catalog",
+              "/cart",
               "/catalogsearch",
               "/bookLoan",
               "/reservation",
@@ -182,7 +182,7 @@ export default function MiniDrawer() {
                     }}
                   >
                     {index === 0 && <SpaceDashboardOutlinedIcon />}
-                    {index === 1 && <LibraryBooksOutlinedIcon />}
+                    {index === 1 && <ShoppingCartOutlinedIcon />}
                     {index === 2 && <SearchOutlinedIcon />}
                     {index === 3 && <StyleOutlinedIcon />}
                     {index === 4 && <EventAvailableOutlinedIcon />}

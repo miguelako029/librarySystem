@@ -5,7 +5,7 @@ import Users from "./pages/userManagement/users";
 import Books from "./pages/books/books";
 import BookManagement from "./pages/books/bookTable";
 import Reservation from "./pages/reservation";
-import Catalog from "./pages/catalogRep/catalogs";
+import Cart from "./pages/cart/cart";
 import CatalogSettings from "./pages/catalogRep/catalogSettings";
 import BookLoan from "./pages/books/bookloan";
 import Login from "./authentication/login";
@@ -33,10 +33,10 @@ export default function App() {
             }
           />
           <Route
-            path="/catalog"
+            path="/cart"
             element={
               <RequireAuth>
-                <Catalog />
+                <Cart />
               </RequireAuth>
             }
           />
