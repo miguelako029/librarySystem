@@ -66,6 +66,7 @@ export const BookList = ({ selectedCatalogId, SelectedBook }) => {
 
   const handleAddToCart = (bookId) => {
     SelectedBook(bookId);
+    console.log(bookId);
   };
 
   return (
@@ -122,7 +123,7 @@ export const BookList = ({ selectedCatalogId, SelectedBook }) => {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => handleAddToCart(book.id)}
+                      onClick={() => handleAddToCart(book)}
                     >
                       Add to cart
                     </Button>

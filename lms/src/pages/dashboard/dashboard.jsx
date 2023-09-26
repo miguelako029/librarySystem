@@ -10,11 +10,11 @@ import {
   collection,
   doc,
   setDoc,
+  getDoc,
   increment,
   runTransaction,
 } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { db } from "../../firebase-config";
+import { db, fs } from "../../firebase-config";
 
 export default function Dashboard() {
   const [selectedCatalogId, setSelectedCatalogId] = useState(null);
@@ -32,28 +32,34 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, []);
 
-  const SelectedBook = (book) => {
-    const auth = getAuth(); // Initialize the authentication module
+  const SelectedBook = async (book) => {
+    if (uid) {
+      try {
+        // Construct the reference to the user's cart document with the user's UID
+        const cartCollection = collection(db, `cart-${uid}`);
+        const cartBookRef = doc(cartCollection, book.id);
 
-    if (auth.currentUser) {
-      // Construct the reference to the user's cart document
-      const cartCollectionName = `cart_${auth.currentUser.uid}`;
-      const cartCollection = collection(db, cartCollectionName);
-      console.log("Cart Collection Name:", cartCollectionName);
+        // Extract the ID from the document reference
+        const cartBookId = cartBookRef.id;
+        console.log("Cart Book ID:", cartBookId);
 
-      // Update the cart with the selected book using 'setDoc'
-      // Here, we are setting the product ID as the document key and value as true
-      const cartDocRef = doc(cartCollection, book); // Create the document reference
-      setDoc(cartDocRef, {
-        [book.id]: true,
-      })
-        .then(() => {
+        // Check if the document exists before setting it
+        const cartBookDoc = await getDoc(cartBookRef);
+
+        if (cartBookDoc.exists()) {
+          console.log("Book is already in the cart");
+        } else {
+          // Set the book data in the cart document
+          await setDoc(cartBookRef, {
+            book: book.id,
+          });
           console.log("Added to cart");
-        })
-        .catch((error) => {
-          console.error("Error adding to cart:", error);
-          console.log(cartCollectionName);
-        });
+        }
+      } catch (error) {
+        console.error("Error adding to cart:", error);
+      }
+    } else {
+      console.log("Error: User not authenticated");
     }
   };
 
