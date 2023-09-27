@@ -48,6 +48,7 @@ export default function Dashboard() {
       // Set the book data in the cart document
       setDoc(cartBookRef, {
         book: book.id,
+        bookName: book.bookTitle,
         bookQty: 1,
         status: "ongoing",
         userId: currentUser.uid,
