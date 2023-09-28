@@ -11,7 +11,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase-config";
 
-import { AuthContextProvide } from "../../components/context/AuthenticatorContext"; // Correct import path
+import { AuthContextProvide } from "../context/AuthenticatorContext"; // Correct import path
 
 const cardStyle = {
   display: "flex",
@@ -36,7 +36,6 @@ const deleteButtonStyle = {
 const CartItemCard = ({ item, onDelete }) => {
   const { currentUser } = useContext(AuthContextProvide);
   const empCollectionRef = collection(db, "cart");
-
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
@@ -81,6 +80,12 @@ const CartItemCard = ({ item, onDelete }) => {
         }
       }
     });
+    const totalItemCount = mergedData.reduce(
+      (total, item) => total + item.bookQty,
+      0
+    );
+
+    console.log("Total Item Count:", totalItemCount);
 
     return mergedData;
   };

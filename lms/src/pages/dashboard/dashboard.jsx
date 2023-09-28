@@ -22,7 +22,7 @@ import { AuthContextProvide } from "../../components/context/AuthenticatorContex
 export default function Dashboard() {
   const { currentUser } = useContext(AuthContextProvide);
 
-  const [selectedCatalogId, setSelectedCatalogId] = useState(null);
+  const [selectedCatalogId, setSelectedCatalogId] = useState("all");
   const [uid, setUid] = useState(null);
 
   useEffect(() => {
